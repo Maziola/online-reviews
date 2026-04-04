@@ -3,7 +3,6 @@ import streamlit as st
 def get_logo_html(size=120):
     """
     Riproduce il logo scelto (Omino e Stelle) direttamente in SVG.
-    Vantaggio: Caricamento istantaneo, nessun link rotto, alta definizione.
     """
     return f"""
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; margin-bottom: 20px;">
@@ -23,7 +22,7 @@ def get_logo_html(size=120):
 
 def apply_custom_styles():
     """
-    Ripristina il look originale wide e pulito.
+    Applica uno stile pulito e wide.
     """
     st.markdown("""
     <style>
