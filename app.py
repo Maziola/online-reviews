@@ -1,121 +1,102 @@
 import streamlit as st
-from openai import OpenAI
+import pandas as pd
+from styles import get_logo_html, apply_custom_styles
 
-# IMPORTIAMO LE FUNZIONI DAI TUOI FILE .PY
-from styles import apply_custom_styles, get_logo_html
-from database import salva_dato_silenzioso, carica_dati, registra_utente, verifica_utente
+# 1. Configurazione della Pagina (Tab del browser)
+st.set_page_config(
+    page_title="Reviews Master Pro",
+    page_icon="⭐",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 
-# 1. Configurazione Pagina (LAYOUT WIDE per occupare tutto lo schermo)
-st.set_page_config(page_title="Reviews Master Pro", layout="wide", initial_sidebar_state="collapsed")
+# 2. Inizializzazione Session State per Autenticazione
+if 'auth' not in st.session_state:
+    st.session_state.auth = False
+if 'user_role' not in st.session_state:
+    st.session_state.user_role = None
+
+# 3. Applicazione Stili CSS Personalizzati
 apply_custom_styles()
 
-# Inizializzazione Sessione
-if "auth" not in st.session_state: st.session_state.auth = False
-if "user" not in st.session_state: st.session_state.user = None
-
-# --- LOGICA DI ACCESSO / REGISTRAZIONE ---
+# --- LOGICA DI AUTENTICAZIONE (LOGIN) ---
 if not st.session_state.auth:
-    st.markdown(get_logo_html(120), unsafe_allow_html=True)
-    st.markdown("<h1 style='text-align: center;'>Reviews Master Pro</h1>", unsafe_allow_html=True)
+    # Mostra il LOGO DEFINITIVO al centro
+    st.markdown(get_logo_html(size=300), unsafe_allow_html=True)
     
+    st.markdown("<h2 style='text-align: center;'>Benvenuto in Reviews Master Pro</h2>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align: center; color: #666;'>La piattaforma AI per l'eccellenza nelle recensioni</p>", unsafe_allow_html=True)
+
+    # Box di Login
     with st.container():
-        st.markdown('<div class="login-box" style="max-width: 500px; margin: 0 auto;">', unsafe_allow_html=True)
-        modalita = st.radio("Cosa vuoi fare?", ["Accedi", "Registrati"], horizontal=True)
-        user_input = st.text_input("Username", key="login_user")
-        pass_input = st.text_input("Password", type="password", key="login_pass")
+        col1, col2, col3 = st.columns([1, 2, 1])
+        with col2:
+            tab1, tab2 = st.tabs(["Accedi", "Registrati"])
+            
+            with tab1:
+                with st.form("login_form"):
+                    email = st.text_input("Email")
+                    password = st.text_input("Password", type="password")
+                    submit = st.form_submit_button("Entra")
+                    
+                    if submit:
+                        # Logica di test (puoi personalizzarla)
+                        if email == "admin" and password == "admin":
+                            st.session_state.auth = True
+                            st.session_state.user_role = "Admin"
+                            st.rerun()
+                        else:
+                            st.error("Credenziali non valide")
+            
+            with tab2:
+                st.info("La registrazione è attualmente limitata ai partner invitati.")
+
+# --- DASHBOARD PRINCIPALE (DOPO IL LOGIN) ---
+else:
+    # Barra Laterale (Sidebar)
+    with st.sidebar:
+        st.markdown(get_logo_html(size=120), unsafe_allow_html=True)
+        st.markdown("---")
+        st.write(f"👤 Utente: **{st.session_state.user_role}**")
+        menu = st.radio("Menu Principale", ["Dashboard", "Analisi Recensioni", "Generatore Risposte", "Impostazioni"])
         
-        if modalita == "Accedi":
-            if st.button("ENTRA", type="primary", use_container_width=True):
-                username = verifica_utente(user_input, pass_input)
-                if username:
-                    st.session_state.auth = True
-                    st.session_state.user = username
-                    st.rerun()
-                else:
-                    st.error("Credenziali errate o utente inesistente.")
-        else:
-            if st.button("CREA ACCOUNT", type="primary", use_container_width=True):
-                if registra_utente(user_input, pass_input):
-                    st.success("✅ Account creato! Ora seleziona 'Accedi'.")
-                else:
-                    st.error("❌ Errore: Username già preso o campi vuoti.")
-        st.markdown('</div>', unsafe_allow_html=True)
-    st.stop()
+        if st.button("Esci"):
+            st.session_state.auth = False
+            st.rerun()
 
-# --- DASHBOARD (Layout Wide) ---
-st.markdown(f"### Benvenuto, {st.session_state.user} 👋")
-
-t1, t2 = st.tabs(["✨ Scrivi Risposta", "📊 I tuoi Trend"])
-
-with t1:
-    # Divisore in due grandi colonne
-    col1, col2 = st.columns([1, 2]) # Colonna sinistra più stretta, destra più larga
+    # Contenuto Principale basato sul Menu
+    st.title(f"🚀 {menu}")
     
-    with col1:
-        st.subheader("Configura la risposta")
-        
-        # ATTIVITÀ (Lista completa + Altro)
-        lista_attivita = ["Hotel", "Ristorante", "B&B", "Negozio", "Bar", "Pizzeria", "Agriturismo", "Centro Estetico", "Altro"]
-        biz = st.selectbox("Tipo di Attività", lista_attivita)
-        
-        # Se seleziona "Altro", appare il campo testo libero
-        biz_custom = ""
-        if biz == "Altro":
-            biz_custom = st.text_input("Specifica attività...", placeholder="Esempio: Palestra")
+    if menu == "Dashboard":
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("Recensioni Totali", "1,254", "+12%")
+        with col2:
+            st.metric("Rating Medio", "4.8/5", "+0.2")
+        with col3:
+            st.metric("Risposte AI Generate", "890", "95% successo")
+            
+        st.markdown("### 📈 Panoramica Prestazioni")
+        # Placeholder per un grafico
+        chart_data = pd.DataFrame([10, 20, 15, 30, 45, 50], columns=["Performance"])
+        st.line_chart(chart_data)
 
-        # TONO (Lista ampliata)
-        lista_toni = ["Professionale", "Amichevole", "Empatico", "Elegante", "Ironico", "Formale", "Diretto"]
-        tone = st.selectbox("Tono della Risposta", lista_toni)
+    elif menu == "Analisi Recensioni":
+        st.subheader("Carica le tue recensioni per l'analisi del sentiment")
+        uploaded_file = st.file_uploader("Scegli un file CSV o Excel", type=["csv", "xlsx"])
+        if uploaded_file:
+            st.success("File caricato con successo! Analisi in corso...")
 
-        # BOX INFO AGGIUNTIVE (Scomparso e ora tornato!)
-        extra_info = st.text_area("Informazioni extra per l'IA", 
-                                 placeholder="Esempio: Offri uno sconto del 10% per la prossima volta o menziona che abbiamo rinnovato la piscina.",
-                                 help="Aggiungi dettagli specifici che vuoi includere nella risposta.")
+    elif menu == "Generatore Risposte":
+        st.subheader("Generatore di risposte intelligenti")
+        review_text = st.text_area("Incolla qui la recensione del cliente:")
+        tone = st.select_slider("Seleziona il tono della risposta", options=["Formale", "Amichevole", "Entusiasta"])
+        if st.button("Genera Risposta con AI"):
+            st.info("L'AI sta scrivendo una risposta perfetta per te...")
+            st.markdown(f"**Risposta Suggerita ({tone}):**")
+            st.write("Gentile cliente, grazie mille per il tuo feedback positivo! Siamo felici che tu abbia apprezzato il nostro servizio. Speriamo di rivederti presto!")
 
-    with col2:
-        st.subheader("Inserisci la Recensione")
-        rev_text = st.text_area("Incolla qui il testo del cliente", height=280)
-        
-        if st.button("Genera Risposte Professionali ✨", type="primary", use_container_width=True):
-            if rev_text:
-                # Usiamo l'attività custom se presente
-                attivita_finale = biz_custom if biz == "Altro" else biz
-                salva_dato_silenzioso(attivita_finale, tone)
-                
-                # Simulazione Risposta (Pronto per OpenAI)
-                st.markdown("---")
-                st.info("🤖 **L'Intelligenza Artificiale sta scrivendo...**")
-                
-                # Box Risultato
-                st.markdown(f'''
-                <div class="variant-card" style="background-color: #f0f2f6; padding: 20px; border-radius: 10px; border-left: 5px solid #ff4b4b;">
-                    <strong>Bozza Generata:</strong><br><br>
-                    Gentile cliente, grazie per aver scelto il nostro {attivita_finale}. 
-                    Ci fa molto piacere che abbia apprezzato il servizio. {extra_info if extra_info else ""}
-                    Speriamo di rivederla presto!
-                </div>
-                ''', unsafe_allow_html=True)
-                
-                st.success("Risposta generata con successo!")
-            else:
-                st.warning("⚠️ Per favore, incolla prima una recensione.")
-
-with t2:
-    st.subheader("Analisi Storica")
-    dati = carica_dati()
-    if dati is not None and not dati.empty:
-        col_stats1, col_stats2 = st.columns(2)
-        with col_stats1:
-            st.line_chart(dati.groupby("Data").size())
-        with col_stats2:
-            st.write("Dettaglio ultime attività:")
-            st.dataframe(dati, use_container_width=True)
-    else:
-        st.info("Nessun dato disponibile nei trend. Inizia a generare risposte!")
-
-# Tasto Logout in Sidebar
-with st.sidebar:
-    st.markdown("---")
-    if st.button("LOGOUT"):
-        st.session_state.auth = False
-        st.rerun()
+    elif menu == "Impostazioni":
+        st.subheader("Configurazione Account")
+        st.checkbox("Notifiche Email")
+        st.checkbox("Risposta Automatica (Beta)")
