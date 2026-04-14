@@ -1,91 +1,164 @@
 import streamlit as st
+import base64
+import os
+
+def apply_custom_font(font_name="Ubuntu"):
+    font_url = font_name.replace(" ", "+")
+    st.markdown(f"""
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family={font_url}:wght@300;400;700;800&display=swap');
+            
+            /* Font globale */
+            html, body, [class*="css"], .stMarkdown, p, div, span, h1, h2, h3, h4, h5 {{
+                font-family: '{font_name}', sans-serif !important;
+            }}
+        </style>
+    """, unsafe_allow_html=True)
 
 def get_logo_html(size=100):
-    """
-    Logo Premium: Omino Blu e Stelle Oro.
-    """
-    return f"""
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding-bottom: 25px;">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="width: {size}px; height: {size}px;">
-            <path d="M12 1L13.5 5.5H18L14.5 8L16 12.5L12 10L8 12.5L9.5 8L6 5.5H10.5L12 1z" fill="#D4AF37"/>
-            <path d="M5 4L5.8 6H8L6.2 7.2L7 9L5 7.8L3 9L3.8 7.2L2 6H4.2L5 4z" fill="#D4AF37" opacity="0.6"/>
-            <path d="M19 4L19.8 6H22L20.2 7.2L21 9L19 7.8L17 9L17.8 7.2L16 6H18.2L19 4z" fill="#D4AF37" opacity="0.6"/>
-            <circle cx="12" cy="14" r="3" fill="#367588"/>
-            <path d="M12 18c-4 0-6 2-6 4v1h12v-1c0-2-2-4-6-4z" fill="#367588"/>
-        </svg>
-        <div style="margin-top: 15px; text-align: center;">
-            <span style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 800; color: #FFFFFF; letter-spacing: 1.5px;">REVIEWS MASTER</span>
-            <span style="font-family: 'Inter', sans-serif; font-size: 24px; font-weight: 300; color: #367588; margin-left: 5px;">PRO</span>
-        </div>
-    </div>
-    """
+    logo_filename = "logo_pro.png" 
+    logo_path = os.path.join(os.path.dirname(__file__), logo_filename)
+    if os.path.exists(logo_path):
+        with open(logo_path, "rb") as f:
+            data = base64.b64encode(f.read()).decode("utf-8")
+        return f'<div style="display: flex; justify-content: center; align-items: center; padding-bottom: 20px;"><img src="data:image/png;base64,{data}" style="width: {size*5}px; height: auto; object-fit: contain;"></div>'
+    return "<div style='height:20px;'></div>"
 
 def apply_custom_styles():
-    """
-    Design avanzato: Contrasto migliorato e leggibilità dei tasti garantita.
-    """
     st.markdown("""
     <style>
-        /* Sfondo profondo */
+        /* =========================================================
+           PATCH: ELIMINAZIONE SCRITTE SOVRAPPOSTE
+        ========================================================= */
+        div[data-baseweb="select"] ~ span > div:last-child,
+        div[data-baseweb="select"] + div svg,
+        div[data-testid="stSelectbox"] div[role="button"] > div:last-child,
+        div[data-testid="stExpander"] svg {
+            display: none !important;
+            visibility: hidden !important;
+        }
+
+        /* =========================================================
+           1. SFONDO GENERALE APP
+        ========================================================= */
         .stApp {
-            background-color: #0B0E14;
+            background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
         }
 
-        /* Card di Login: Bianco morbido con ombra soft */
-        [data-testid="stForm"] {
-            background-color: #F8F9FA !important;
-            border-radius: 20px !important;
-            padding: 40px !important;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5) !important;
-            border: none !important;
+        /* =========================================================
+           2. SIDEBAR (SINISTRA) - TUTTO BIANCO
+        ========================================================= */
+        [data-testid="stSidebar"], [data-testid="stSidebarContent"] {
+            background-color: #4a5568 !important;
+            background-image: none !important;
         }
 
-        /* Label (Username/Password): Grigio scuro per contrasto su bianco */
-        [data-testid="stForm"] label p {
-            color: #1F2937 !important;
-            font-weight: 600 !important;
-            font-size: 15px !important;
-        }
-
-        /* Input Fields: Bianco puro con bordo sottile */
-        input {
-            background-color: #FFFFFF !important;
-            color: #111827 !important;
-            border: 1px solid #D1D5DB !important;
-            border-radius: 10px !important;
-            padding: 12px !important;
-        }
-
-        /* PULSANTI: Sfondo Teal e TESTO BIANCO (Garantito) */
-        div.stButton > button {
-            background-color: #367588 !important;
+        /* Forza bianco su OGNI testo/label/titolo nella sidebar */
+        [data-testid="stSidebar"] label p, 
+        [data-testid="stSidebar"] .stMarkdown p, 
+        [data-testid="stSidebar"] span, 
+        [data-testid="stSidebar"] .stCaption,
+        [data-testid="stSidebar"] p,
+        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3,
+        [data-testid="stSidebar"] h4, [data-testid="stSidebar"] h5 {
             color: #FFFFFF !important;
-            border: none !important;
-            border-radius: 50px !important;
-            height: 3.5em !important;
-            width: 100% !important;
-            font-weight: 700 !important;
-            font-size: 16px !important;
-            box-shadow: 0 4px 12px rgba(54, 117, 136, 0.4) !important;
-            text-transform: uppercase !important;
+            font-weight: 600 !important;
+            opacity: 1 !important;
         }
 
-        /* Tabs in alto */
-        .stTabs [data-baseweb="tab-list"] {
-            gap: 24px;
-        }
-        .stTabs [data-baseweb="tab"] {
-            color: #9CA3AF;
-            font-weight: 600;
-        }
-        .stTabs [aria-selected="true"] {
+        /* =========================================================
+           3. AREA DESTRA E LOGIN - TUTTO VERDE PETROLIO
+        ========================================================= */
+        /* Titoli, Label (incluso "Tono della risposta"), Tab e Markdown a destra */
+        h1, h2, h3, h4, h5,
+        label p,
+        button[data-baseweb="tab"] p,
+        .stApp .stMarkdown p,
+        .stApp span {
             color: #367588 !important;
-            border-bottom-color: #367588 !important;
+            font-weight: bold !important;
+        }
+
+        /* Riallineamento: Se una regola sopra ha "sporcato" la sidebar, la riportiamo bianca */
+        [data-testid="stSidebar"] label p,
+        [data-testid="stSidebar"] h3,
+        [data-testid="stSidebar"] p,
+        [data-testid="stSidebar"] .stMarkdown p {
+            color: #FFFFFF !important;
+        }
+
+        /* =========================================================
+           4. INPUT, TEXTAREA E SELECTBOX - SFONDO BIANCO E TESTO NERO
+        ========================================================= */
+        div[data-baseweb="base-input"] input, 
+        div[data-baseweb="base-input"] textarea,
+        div[data-baseweb="select"] > div, 
+        .stTextInput input,
+        .stTextArea textarea {
+            background-color: #FFFFFF !important;
+            color: #000000 !important;
+            -webkit-text-fill-color: #000000 !important;
+            caret-color: #000000 !important;
+            border-radius: 12px !important;
+            border: 1px solid #CBD5E1 !important;
+        }
+
+        /* Colore testo selezionato nei menu a tendina */
+        div[data-testid="stSelectbox"] p, div[data-testid="stSelectbox"] div {
+            color: #000000 !important;
+        }
+
+        /* =========================================================
+           5. CARD BIANCA (Dashboard)
+        ========================================================= */
+        .main-card {
+            background-color: #FFFFFF !important;
+            border-radius: 20px !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
+            padding: 40px !important;
         }
         
-        /* Correzione per scritte bianche su card bianca (Area Riservata) */
-        h3 {
-            color: #1F2937 !important;
+        /* I paragrafi semplici dentro la card restano neri per leggibilità */
+        .main-card .stMarkdown p {
+            color: #000000 !important;
+        }
+
+        /* =========================================================
+           6. PULSANTI
+        ========================================================= */
+        div.stButton > button, 
+        div.stFormSubmitButton > button {
+            background-color: #367588 !important;
+            color: #FFFFFF !important;
+            -webkit-text-fill-color: #FFFFFF !important;
+            border-radius: 10px !important;
+            font-weight: 700 !important;
+            border: none !important;
+        }
+
+        div.stButton > button:hover {
+            background-color: #2a5d6d !important;
+        }
+
+        /* =========================================================
+           7. FIX NOTIFICHE (GIALLO CHIARO) E VARIANTI
+        ========================================================= */
+        /* Sfondo giallo chiaro e testo scuro per visibilità immediata */
+        [data-testid="stNotification"] {
+            background-color: #fff9c4 !important; /* Giallo chiaro */
+            color: #5d4037 !important; /* Marrone scuro/antracite per contrasto */
+            border: 1px solid #fff176 !important;
+            border-radius: 10px !important;
+        }
+        
+        [data-testid="stNotification"] p {
+            color: #5d4037 !important;
+            font-weight: 600 !important;
+        }
+
+        /* Forza il colore verde petrolio per i testi delle varianti (VAR A, B, C) */
+        .variant-card p {
+            color: #367588 !important;
         }
     </style>
     """, unsafe_allow_html=True)
