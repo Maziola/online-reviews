@@ -53,22 +53,25 @@ def apply_custom_styles():
             background-image: none !important;
         }
 
-        /* Questa regola punta specificamente alle etichette dei widget (Selectbox, TextInput, ecc.) nella sidebar */
-        [data-testid="stSidebar"] label, 
-        [data-testid="stSidebar"] label p, 
-        [data-testid="stSidebar"] div[data-testid="stWidgetLabel"] p {
+        /* Selettore ultra-specifico per le etichette dei widget (Selectbox, ecc.) */
+        [data-testid="stSidebar"] div[data-testid="stWidgetLabel"] p,
+        [data-testid="stSidebar"] label p,
+        [data-testid="stSidebar"] label {
             color: #FFFFFF !important;
-            font-weight: 600 !important;
-            fill: #FFFFFF !important; /* Per eventuali icone/frecce */
+            font-weight: 700 !important;
+            opacity: 1 !important;
         }
 
-        /* Forza bianco su tutto il resto nella sidebar */
+        /* Forza bianco su tutti gli altri elementi della sidebar */
         [data-testid="stSidebar"] .stMarkdown p, 
         [data-testid="stSidebar"] span, 
         [data-testid="stSidebar"] .stCaption,
         [data-testid="stSidebar"] p,
-        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3,
-        [data-testid="stSidebar"] h4, [data-testid="stSidebar"] h5 {
+        [data-testid="stSidebar"] h1, 
+        [data-testid="stSidebar"] h2, 
+        [data-testid="stSidebar"] h3,
+        [data-testid="stSidebar"] h4, 
+        [data-testid="stSidebar"] h5 {
             color: #FFFFFF !important;
             font-weight: 600 !important;
         }
