@@ -5,47 +5,69 @@ import auth_handler as auth
 def render_admin_zone():
     st.markdown(f"### {t('admin_panel')}")
     
-    # Inizio del contenitore bianco che vedi nell'immagine
+    # Inizio del contenitore per lo stile grafico
     with st.container():
         st.markdown(f'<div class="admin-box">', unsafe_allow_html=True)
         st.write(f"**{t('admin_desc')}**")
-        st.divider() # Linea di separazione estetica
+        st.divider() 
 
-        # 1. Recupero la lista aggiornata degli utenti dal database
         try:
+            # 1. Recupero la lista utenti
             users = auth.get_all_users()
             
-            if not users:
-                st.info("Non ci sono ancora utenti registrati oltre all'admin.")
+            # Filtro per escludere l'admin dalla lista (opzionale, ma pulisce la vista)
+            users_list = [u for u in users if u['username'].lower() != "admin"]
+            
+            if not users_list:
+                st.info(t("no_users"))
             else:
-                # 2. Creo l'intestazione della tabella
+                # 2. Intestazione tabella tradotta
                 h1, h2, h3 = st.columns([2, 2, 1])
-                h1.caption("UTENTE")
-                h2.caption("STATO")
-                h3.caption("AZIONE")
+                
+                # Traduzioni al volo per le intestazioni colonna
+                col_utente = {"it": "UTENTE", "en": "USER", "fr": "UTILISATEUR", "de": "BENUTZER", "es": "USUARIO"}
+                col_stato = {"it": "STATO", "en": "STATUS", "fr": "ÉTAT", "de": "STATUS", "es": "ESTADO"}
+                col_azione = {"it": "AZIONE", "en": "ACTION", "fr": "ACTION", "de": "AKTION", "es": "ACCIÓN"}
+                
+                lang = st.session_state.get("current_lang_code", "it")
+                
+                h1.caption(col_utente.get(lang, "USER"))
+                h2.caption(col_stato.get(lang, "STATUS"))
+                h3.caption(col_azione.get(lang, "ACTION"))
 
-                # 3. Ciclo su ogni utente per creare una riga
-                for user in users:
+                # 3. Ciclo su ogni utente
+                for user in users_list:
                     with st.container():
                         c1, c2, c3 = st.columns([2, 2, 1])
                         
-                        # Nome utente e data iscrizione
+                        # Nome utente
                         c1.markdown(f"👤 **{user['username']}**")
-                        c1.caption(f"Iscritto il: {user['signup_date']}")
                         
-                        # Stato attuale
-                        status_label = "✅ Attivo" if user['active'] else "⏳ In Prova (Trial)"
-                        c2.write(status_label)
+                        # Data iscrizione tradotta
+                        label_iscritto = {"it": "Iscritto il", "en": "Joined on", "fr": "Inscrit le", "de": "Beigetreten am", "es": "Registrado el"}
+                        c1.caption(f"{label_iscritto.get(lang, 'Joined')}: {user['signup_date']}")
                         
-                        # Pulsante per cambiare stato
-                        btn_label = "Disattiva" if user['active'] else "Attiva"
-                        if c3.button(btn_label, key=f"toggle_{user['username']}", use_container_width=True):
+                        # Stato attuale tradotto
+                        if user['active']:
+                            status_txt = {"it": "✅ Attivo", "en": "✅ Active", "fr": "✅ Actif", "de": "✅ Aktiv", "es": "✅ Activo"}
+                        else:
+                            status_txt = {"it": "⏳ In Prova", "en": "⏳ Trial Mode", "fr": "⏳ En Essai", "de": "⏳ Testversion", "es": "⏳ En Prueba"}
+                        
+                        c2.write(status_txt.get(lang, "Status"))
+                        
+                        # Pulsante per cambiare stato (Tradotto)
+                        if user['active']:
+                            btn_label = {"it": "Disattiva", "en": "Deactivate", "fr": "Désactiver", "de": "Deaktivieren", "es": "Desactivar"}
+                        else:
+                            btn_label = {"it": "Attiva", "en": "Activate", "fr": "Activer", "de": "Aktivieren", "es": "Activar"}
+                            
+                        if c3.button(btn_label.get(lang, "Toggle"), key=f"toggle_{user['username']}", use_container_width=True):
                             auth.toggle_user_status(user['username'])
-                            st.rerun() # Ricarica per vedere il cambio di stato
+                            st.rerun() 
                         
-                        st.markdown("---") # Separatore tra utenti
+                        st.markdown("---") 
         
         except Exception as e:
-            st.error(f"Errore nel caricamento utenti: {e}")
+            st.error(f"Error: {e}")
             
         st.markdown('</div>', unsafe_allow_html=True)

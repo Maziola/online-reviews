@@ -4,8 +4,7 @@ import auth_handler as auth
 
 def render_sidebar():
     with st.sidebar:
-        # 1. SELETTORE LINGUA (Con aggiornamento immediato della sessione)
-        # Cerchiamo la chiave corrispondente al codice attuale per impostare l'indice corretto
+        # 1. SELETTORE LINGUA
         current_code = st.session_state.get("current_lang_code", "it")
         lang_list = list(LANG_MAP.keys())
         try:
@@ -13,9 +12,8 @@ def render_sidebar():
         except ValueError:
             current_index = 0
 
-        selected_lang = st.selectbox("🌐 Lingua App", lang_list, index=current_index)
+        selected_lang = st.selectbox(f"🌐 {t('lang_app')}", lang_list, index=current_index)
         
-        # Se la lingua selezionata è diversa da quella in sessione, aggiorniamo e ricarichiamo
         if LANG_MAP[selected_lang] != st.session_state.current_lang_code:
             st.session_state.current_lang_code = LANG_MAP[selected_lang]
             st.rerun()
@@ -26,58 +24,57 @@ def render_sidebar():
         # --- PROFILO BUSINESS ---
         st.markdown(f"##### 🏢 {t('prof_biz')}")
         
-        st.text_input(t("biz_name"), placeholder="Es: Pizzeria da Mario", key="sb_name")
-        st.selectbox(t("cat_merc"), t_list("categories"), key="sb_cat")
-        st.selectbox("🎭 Tono della risposta", t_list("tones"), key="sb_tone")
+        # Placeholder tradotti per il nome business
+        ph_biz = {"it": "Es: Pizzeria da Mario", "en": "Ex: Mario's Pizza", "fr": "Ex: Pizzeria chez Mario", "de": "Z.B. Marios Pizzeria", "es": "Ej: Pizzería de Mario"}
+        lang = st.session_state.current_lang_code
         
-        # Utilizziamo label esplicite per evitare che il CSS anti-sovrapposizione nasconda troppo
-        with st.expander("✨ Punti di Forza", expanded=False):
-            st.text_area("Vantaggi competitivi:", key="sb_kf", label_visibility="visible", height=100)
+        st.text_input(t("biz_name"), placeholder=ph_biz.get(lang, ""), key="sb_name")
+        st.selectbox(t("cat_label"), t_list("categories"), key="sb_cat")
+        st.selectbox(t("tone_label"), t_list("tones"), key="sb_tone")
+        
+        # --- PUNTI DI FORZA (BOX TRADOTTI) ---
+        with st.expander(f"✨ {t('punti_forza')}", expanded=False):
+            # Traduzione della label interna "Vantaggi competitivi"
+            label_vantaggi = {"it": "Vantaggi competitivi:", "en": "Competitive advantages:", "fr": "Avantages compétitifs :", "de": "Wettbewerbsvorteile:", "es": "Ventajas competitivas:"}
+            st.text_area(label_vantaggi.get(lang, "Info:"), key="sb_kf", height=100)
             
-        with st.expander("🛡️ Policy & Firma", expanded=False):
-            st.text_input("Firma finale:", placeholder="Il Team di...", key="sb_sig")
+        # --- POLICY & FIRMA (BOX TRADOTTI) ---
+        with st.expander(f"🛡️ {t('policy_firma')}", expanded=False):
+            # Traduzione della label interna "Firma finale"
+            label_firma = {"it": "Firma finale:", "en": "Final signature:", "fr": "Signature finale :", "de": "Abschlussunterschrift:", "es": "Firma final:"}
+            st.text_input(label_firma.get(lang, "Signature:"), placeholder="Il Team di...", key="sb_sig")
 
         st.markdown("---")
         
-        # --- STORICO CON RINOMINA ED ELIMINA ---
-        st.markdown("##### 📜 Ultime Analisi")
+        # --- STORICO ---
+        st.markdown(f"##### 📜 {t('last_analyses')}")
         history_data = auth.get_history(st.session_state.username)
         
         if history_data:
             for i, item in enumerate(history_data):
-                # item[3] è il nome/data dell'analisi salvata
                 col_btn, col_edit, col_del = st.columns([3, 1, 1])
-                
-                # 1. Tasto per visualizzare l'analisi nel main
                 if col_btn.button(f"🕒 {item[3]}", key=f"hi_{i}", use_container_width=True):
                     st.session_state.history_item = item
                     st.rerun()
                 
-                # 2. Popover per rinominare (✏️)
                 with col_edit:
                     with st.popover("✏️"):
-                        new_name = st.text_input("Rinomina analisi:", value=item[3], key=f"edit_val_{i}")
-                        if st.button("Conferma", key=f"save_edit_{i}", use_container_width=True):
-                            if new_name:
-                                auth.rename_history_item(st.session_state.username, item[3], new_name)
-                                st.rerun()
+                        st.text_input("Rename:", value=item[3], key=f"edit_val_{i}")
+                        if st.button("OK", key=f"save_edit_{i}"):
+                            auth.rename_history_item(st.session_state.username, item[3], st.session_state[f"edit_val_{i}"])
+                            st.rerun()
                 
-                # 3. Popover per eliminare (🗑️)
                 with col_del:
                     with st.popover("🗑️"):
-                        st.error("Eliminare?")
-                        if st.button("Sì, elimina", key=f"del_{i}", type="primary", use_container_width=True):
+                        if st.button(t("confirm_del") if "confirm_del" in TRANSLATIONS else "Delete?", key=f"del_{i}", type="primary"):
                             auth.delete_history_item(st.session_state.username, item[3])
-                            # Pulizia se l'analisi eliminata è quella aperta
-                            if st.session_state.get("history_item") and st.session_state.history_item[3] == item[3]:
-                                st.session_state.history_item = None
                             st.rerun()
         else:
-            st.caption("Nessuna analisi salvata.")
+            st.caption(t("no_analyses"))
 
         st.markdown("---")
-        if st.button("🚪 Log out", use_container_width=True):
+        # Logout tradotto
+        btn_logout = {"it": "🚪 Esci", "en": "🚪 Log out", "fr": "🚪 Déconnexion", "de": "🚪 Abmelden", "es": "🚪 Cerrar sesión"}
+        if st.button(btn_logout.get(lang, "Exit"), use_container_width=True):
             st.session_state.auth = False
-            st.session_state.username = ""
-            st.session_state.history_item = None
             st.rerun()
