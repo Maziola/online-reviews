@@ -56,35 +56,53 @@ def genera_risposte_ai(recensione, contesto, tono, business_name, categoria):
 def on_lang_change():
     st.session_state.current_lang_code = LANG_MAP[st.session_state.lang_picker]
 
-# --- LOGICA DI ACCESSO ---
+# --- LOGICA DI ACCESSO NEL MAIN.PY ---
 if not st.session_state.auth:
     col_l, col_m, col_r = st.columns([1, 2, 1])
+    
+    # Selettore lingua in alto a destra nella pagina di login
     with col_r:
-        st.selectbox("🌐", list(LANG_MAP.keys()), key="lang_picker", on_change=on_lang_change)
+        lang_list = list(LANG_MAP.keys())
+        current_code = st.session_state.get("current_lang_code", "it")
+        try:
+            current_index = list(LANG_MAP.values()).index(current_code)
+        except:
+            current_index = 0
+            
+        sel_lang = st.selectbox("🌐", lang_list, index=current_index, key="login_lang_picker")
+        if LANG_MAP[sel_lang] != st.session_state.current_lang_code:
+            st.session_state.current_lang_code = LANG_MAP[sel_lang]
+            st.rerun()
+
     with col_m:
         st.markdown(get_logo_html(80), unsafe_allow_html=True)
-        tab_login, tab_reg = st.tabs(["🔑 ACCESSO", "📝 REGISTRAZIONE"])
+        
+        # Tabs tradotte
+        tab_login, tab_reg = st.tabs([t("login_tab"), t("reg_tab")])
         
         with tab_login:
             with st.form("login_form"):
-                u = st.text_input("Username")
-                p = st.text_input("Password", type="password")
-                if st.form_submit_button("ACCEDI AL PORTALE", use_container_width=True):
+                u = st.text_input(t("user_label"))
+                p = st.text_input(t("pass_label"), type="password")
+                if st.form_submit_button(t("btn_login"), use_container_width=True):
                     success, status, rem = auth.check_auth(u, p)
                     if success:
                         st.session_state.auth = True
                         st.session_state.username = u
                         st.rerun()
-                    else: st.error("Credenziali errate o Trial scaduto.")
+                    else: 
+                        st.error(t("auth_error"))
         
         with tab_reg:
             with st.form("registration_form"):
-                new_u = st.text_input("Username")
-                new_p = st.text_input("Password", type="password")
-                if st.form_submit_button("REGISTRA", use_container_width=True):
+                new_u = st.text_input(t("user_label"))
+                new_p = st.text_input(t("pass_label"), type="password")
+                if st.form_submit_button(t("btn_reg"), use_container_width=True):
                     ok, msg = auth.register_user(new_u, new_p)
-                    if ok: st.success(msg)
-                    else: st.error(msg)
+                    if ok: 
+                        st.success(msg)
+                    else: 
+                        st.error(msg)
     st.stop()
 
 # --- APP INTERNA ---
