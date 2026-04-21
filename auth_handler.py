@@ -37,7 +37,7 @@ def register_user(user, pw):
 
 def check_auth(user, pw):
     """Verifica le credenziali e lo stato dell'abbonamento"""
-    if user == "admin" and pw == "admin":
+    if user == "admin" and pw == "VLLMTT":
         return True, "active", 999
     
     conn = sqlite3.connect(DB_NAME)
