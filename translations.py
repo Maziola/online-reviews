@@ -35,7 +35,7 @@ TRANSLATIONS = {
     "no_users": {"it": "Non ci sono ancora utenti registrati oltre all'admin.", "en": "There are no registered users besides the admin.", "fr": "Il n'y a pas encore d'utilisateurs inscrits à part l'admin.", "de": "Es gibt noch keine registrierten Benutzer außer dem Admin.", "es": "Aún no hay usuarios registrados además del administrador."},
     
     # GENERATORE & DASHBOARD
-    "dash_title": {"it": "### ✨ Generatore di Risposte:", "en": "### ✨ Reply Generator:", "fr": "### ✨ Générateur :", "de": "### ✨ Generator:", "es": "### ✨ Generador:"},
+    "dash_title": {"it": "✨ Generatore di Risposte:", "en": "✨ Reply Generator:", "fr": "✨ Générateur :", "de": "✨ Generator:", "es": "✨ Generador:"},
     "btn_gen": {"it": "GENERA 3 VARIANTI ✨", "en": "GENERATE 3 VARIANTS ✨", "fr": "GÉNÉRER 3 VARIANTES ✨", "de": "3 VARIANTEN GENERIEREN ✨", "es": "GENERAR 3 VARIANTES ✨"},
     "txt_rec": {"it": "Testo della recensione:", "en": "Review text:", "fr": "Texte de l'avis :", "de": "Bewertungstext:", "es": "Texto de la reseña:"},
     "extra_ctx": {"it": "Contesto extra / Note specifiche:", "en": "Extra context / Specific notes:", "fr": "Contexte supplémentaire / Notes :", "de": "Extra-Kontext / Spezifische Notizen:", "es": "Contexto extra / Notas específicas:"},

@@ -46,15 +46,23 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-           2. SIDEBAR (SINISTRA) - TUTTO BIANCO
+           2. SIDEBAR (SINISTRA) - FORZA TESTO BIANCO
         ========================================================= */
         [data-testid="stSidebar"], [data-testid="stSidebarContent"] {
             background-color: #4a5568 !important;
             background-image: none !important;
         }
 
-        /* Forza bianco su OGNI testo/label/titolo nella sidebar */
+        /* Questa regola punta specificamente alle etichette dei widget (Selectbox, TextInput, ecc.) nella sidebar */
+        [data-testid="stSidebar"] label, 
         [data-testid="stSidebar"] label p, 
+        [data-testid="stSidebar"] div[data-testid="stWidgetLabel"] p {
+            color: #FFFFFF !important;
+            font-weight: 600 !important;
+            fill: #FFFFFF !important; /* Per eventuali icone/frecce */
+        }
+
+        /* Forza bianco su tutto il resto nella sidebar */
         [data-testid="stSidebar"] .stMarkdown p, 
         [data-testid="stSidebar"] span, 
         [data-testid="stSidebar"] .stCaption,
@@ -63,7 +71,6 @@ def apply_custom_styles():
         [data-testid="stSidebar"] h4, [data-testid="stSidebar"] h5 {
             color: #FFFFFF !important;
             font-weight: 600 !important;
-            opacity: 1 !important;
         }
 
         /* =========================================================
