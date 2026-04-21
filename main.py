@@ -14,12 +14,9 @@ apply_custom_font("Ubuntu")
 apply_custom_styles()
 
 # --- CONFIGURAZIONE OPENAI (Secrets) ---
-# Quando sarai online, inserirai la chiave nei Secrets di Streamlit Cloud
 try:
     openai.api_key = st.secrets["OPENAI_API_KEY"]
 except:
-    # Per il test in locale, puoi decommentare la riga sotto (non caricarla su GitHub!)
-    # openai.api_key = "LA_TUA_CHIAVE_QUI"
     pass
 
 # Inizializzazione sessione
@@ -117,10 +114,13 @@ if st.session_state.username.lower() == "admin":
 if st.session_state.history_item:
     item = st.session_state.history_item
     st.markdown('<div class="main-card">', unsafe_allow_html=True)
-    st.subheader(f"📜 Analisi: {item[3]}")
-    st.info(f"**Recensione ricevuta:**\n\n{item[1]}")
-    st.success(f"**Risposta inviata:**\n\n{item[2]}")
-    if st.button("🔙 Torna al Generatore"):
+    st.subheader(f"📜 {t('last_analyses')}: {item[3]}")
+    st.info(f"**{t('txt_rec')}**\n\n{item[1]}")
+    st.success(f"**Risposta:**\n\n{item[2]}")
+    
+    # Traduzione del tasto "Torna al Generatore"
+    back_label = {"it": "🔙 Torna al Generatore", "en": "🔙 Back to Generator", "fr": "🔙 Retour au Générateur", "de": "🔙 Zurück zum Generator", "es": "🔙 Volver al Generador"}
+    if st.button(back_label.get(st.session_state.current_lang_code, "Back")):
         st.session_state.history_item = None
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
@@ -138,26 +138,33 @@ else:
 
     if st.button(t("btn_gen"), use_container_width=True):
         if rev_text:
-            with st.spinner("L'intelligenza artificiale sta scrivendo..."):
+            # Traduzione spinner
+            spin_label = {"it": "L'intelligenza artificiale sta scrivendo...", "en": "AI is writing...", "fr": "L'IA écrit...", "de": "KI schreibt...", "es": "La IA está escribiendo..."}
+            with st.spinner(spin_label.get(st.session_state.current_lang_code, "...")):
                 # Parametri dalla sidebar
-                b_name = st.session_state.get("sb_name", "La nostra attività")
+                b_name = st.session_state.get("sb_name", "Business")
                 b_cat = st.session_state.get("sb_cat", "General")
                 b_tone = st.session_state.get("sb_tone", "Professional")
                 
                 # Chiamata a OpenAI
                 varianti = genera_risposte_ai(rev_text, ctx_text, b_tone, b_name, b_cat)
                 
-                # Salvataggio nel database (salviamo la prima variante come default)
+                # Salvataggio nel database
                 auth.save_review(st.session_state.username, b_cat, b_name, rev_text, varianti[0])
 
                 # Visualizzazione
                 st.markdown("---")
+                st.success(t("success_msg"))
                 v_cols = st.columns(3)
                 for i, v in enumerate(varianti[:3]):
                     with v_cols[i]:
                         st.markdown(f"#### Opzione {i+1}")
                         st.write(v)
-                        st.button(f"Copia Opzione {i+1}", key=f"cp_{i}")
+                        # Traduzione tasto copia
+                        copy_label = {"it": "Copia", "en": "Copy", "fr": "Copier", "de": "Kopieren", "es": "Copiar"}
+                        st.button(f"{copy_label.get(st.session_state.current_lang_code, 'Copy')} {i+1}", key=f"cp_{i}")
         else:
-            st.warning("Inserisci il testo della recensione.")
+            # Traduzione warning
+            warn_msg = {"it": "Inserisci il testo della recensione.", "en": "Please enter the review text.", "fr": "Veuillez saisir le texte de l'avis.", "de": "Bitte geben Sie den Bewertungstext ein.", "es": "Por favor, introduce el texto de la reseña."}
+            st.warning(warn_msg.get(st.session_state.current_lang_code, "!"))
     st.markdown('</div>', unsafe_allow_html=True)
