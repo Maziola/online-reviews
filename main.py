@@ -49,15 +49,10 @@ def genera_risposte_ai(recensione, contesto, tono, business_name, categoria):
     except Exception as e:
         return [f"Errore API: {str(e)}", "", ""]
 
-# Callback lingua
-def on_lang_change():
-    st.session_state.current_lang_code = LANG_MAP[st.session_state.lang_picker]
-
-# --- LOGICA DI ACCESSO NEL MAIN.PY ---
+# --- LOGICA DI ACCESSO ---
 if not st.session_state.auth:
     col_l, col_m, col_r = st.columns([1, 2, 1])
     
-    # Selettore lingua in alto a destra nella pagina di login
     with col_r:
         lang_list = list(LANG_MAP.keys())
         current_code = st.session_state.get("current_lang_code", "it")
@@ -74,7 +69,7 @@ if not st.session_state.auth:
     with col_m:
         st.markdown(get_logo_html(80), unsafe_allow_html=True)
         
-        # Tabs tradotte
+        # Tabs tradotte: richiamano correttamente la funzione t()
         tab_login, tab_reg = st.tabs([t("login_tab"), t("reg_tab")])
         
         with tab_login:
@@ -110,23 +105,19 @@ if st.session_state.username.lower() == "admin":
     render_admin_zone()
     st.markdown("---")
 
-# Visualizzazione Storico
+# Visualizzazione Storico o Generatore
 if st.session_state.history_item:
     item = st.session_state.history_item
     st.markdown('<div class="main-card">', unsafe_allow_html=True)
     st.subheader(f"📜 {t('last_analyses')}: {item[3]}")
     st.info(f"**{t('txt_rec')}**\n\n{item[1]}")
     st.success(f"**Risposta:**\n\n{item[2]}")
-    
-    # Traduzione del tasto "Torna al Generatore"
-    back_label = {"it": "🔙 Torna al Generatore", "en": "🔙 Back to Generator", "fr": "🔙 Retour au Générateur", "de": "🔙 Zurück zum Generator", "es": "🔙 Volver al Generador"}
-    if st.button(back_label.get(st.session_state.current_lang_code, "Back")):
+    if st.button("🔙 Torna al Generatore"):
         st.session_state.history_item = None
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
 
 else:
-    # GENERATORE
     st.markdown('<div class="main-card">', unsafe_allow_html=True)
     st.markdown(t("dash_title"))
 
@@ -138,21 +129,14 @@ else:
 
     if st.button(t("btn_gen"), use_container_width=True):
         if rev_text:
-            # Traduzione spinner
-            spin_label = {"it": "L'intelligenza artificiale sta scrivendo...", "en": "AI is writing...", "fr": "L'IA écrit...", "de": "KI schreibt...", "es": "La IA está escribiendo..."}
-            with st.spinner(spin_label.get(st.session_state.current_lang_code, "...")):
-                # Parametri dalla sidebar
+            with st.spinner("..."):
                 b_name = st.session_state.get("sb_name", "Business")
                 b_cat = st.session_state.get("sb_cat", "General")
                 b_tone = st.session_state.get("sb_tone", "Professional")
                 
-                # Chiamata a OpenAI
                 varianti = genera_risposte_ai(rev_text, ctx_text, b_tone, b_name, b_cat)
-                
-                # Salvataggio nel database
                 auth.save_review(st.session_state.username, b_cat, b_name, rev_text, varianti[0])
 
-                # Visualizzazione
                 st.markdown("---")
                 st.success(t("success_msg"))
                 v_cols = st.columns(3)
@@ -160,11 +144,7 @@ else:
                     with v_cols[i]:
                         st.markdown(f"#### Opzione {i+1}")
                         st.write(v)
-                        # Traduzione tasto copia
-                        copy_label = {"it": "Copia", "en": "Copy", "fr": "Copier", "de": "Kopieren", "es": "Copiar"}
-                        st.button(f"{copy_label.get(st.session_state.current_lang_code, 'Copy')} {i+1}", key=f"cp_{i}")
+                        st.button(f"Copia {i+1}", key=f"cp_{i}")
         else:
-            # Traduzione warning
-            warn_msg = {"it": "Inserisci il testo della recensione.", "en": "Please enter the review text.", "fr": "Veuillez saisir le texte de l'avis.", "de": "Bitte geben Sie den Bewertungstext ein.", "es": "Por favor, introduce el texto de la reseña."}
-            st.warning(warn_msg.get(st.session_state.current_lang_code, "!"))
+            st.warning(t("txt_rec"))
     st.markdown('</div>', unsafe_allow_html=True)
