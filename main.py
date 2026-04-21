@@ -32,26 +32,23 @@ if "history_item" not in st.session_state:
     st.session_state.history_item = None
 
 # Funzione per generare le risposte
-def genera_risposte_ai(recensione, contesto, tono, business_name, categoria):
-    prompt = f"""
-    Sei un esperto di Customer Care per un'attività di tipo {categoria} chiamata {business_name}.
-    Il tono della risposta deve essere: {tono}.
-    Recensione del cliente: "{recensione}"
-    Note aggiuntive/Contesto: "{contesto}"
+def genera_risposte_ai(prompt):
+    risposte = []
+    # Usiamo un ciclo for per assicurarci di fare 3 tentativi distinti
+    for i in range(3):
+        try:
+            # Aggiungiamo una piccola variazione al prompt per ogni ciclo
+            # per forzare l'AI a non scopiazzare se stessa
+            response = client.chat.completions.create(
+                model="gpt-4o", # o "gpt-3.5-turbo"
+                messages=[{"role": "user", "content": f"{prompt} - Variante {i+1}"}],
+                temperature=0.7 # Temperatura alta = più creatività tra le varianti
+            )
+            risposte.append(response.choices[0].message.content)
+        except Exception as e:
+            risposte.append(f"Errore nella generazione della variante {i+1}: {e}")
     
-    Genera 3 varianti di risposta diverse. 
-    Separa rigorosamente le varianti con il simbolo '###'.
-    """
-    try:
-        response = openai.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[{"role": "system", "content": "Sei un assistente professionale."},
-                      {"role": "user", "content": prompt}],
-            temperature=0.7
-        )
-        return response.choices[0].message.content.split('###')
-    except Exception as e:
-        return [f"Errore API: {str(e)}", "", ""]
+    return risposte
 
 # --- LOGICA DI ACCESSO ---
 if not st.session_state.auth:
