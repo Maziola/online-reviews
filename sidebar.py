@@ -24,23 +24,33 @@ def render_sidebar():
         # --- PROFILO BUSINESS ---
         st.markdown(f"##### 🏢 {t('prof_biz')}")
         
-        # Placeholder tradotti per il nome business
-        ph_biz = {"it": "Es: Pizzeria da Mario", "en": "Ex: Mario's Pizza", "fr": "Ex: Pizzeria chez Mario", "de": "Z.B. Marios Pizzeria", "es": "Ej: Pizzería de Mario"}
         lang = st.session_state.current_lang_code
         
+        # Nome Business
+        ph_biz = {"it": "Es: Pizzeria da Mario", "en": "Ex: Mario's Pizza", "fr": "Ex: Pizzeria chez Mario", "de": "Z.B. Marios Pizzeria", "es": "Ej: Pizzería de Mario"}
         st.text_input(t("biz_name"), placeholder=ph_biz.get(lang, ""), key="sb_name")
-        st.selectbox(t("cat_label"), t_list("categories"), key="sb_cat")
-        st.selectbox(t("tone_label"), t_list("tones"), key="sb_tone")
+
+        # Categoria (Si aggiorna con la lingua)
+        st.selectbox(
+            t("cat_label"), 
+            options=t_list("categories"), 
+            key="sb_cat"
+        )
+
+        # Tono della risposta (CORRETTO: ora si aggiorna al cambio lingua)
+        st.selectbox(
+            t("tone_label"), 
+            options=t_list("tones"), 
+            key="sb_tone"
+        )
         
-        # --- PUNTI DI FORZA (BOX TRADOTTI) ---
+        # --- PUNTI DI FORZA ---
         with st.expander(f"✨ {t('punti_forza')}", expanded=False):
-            # Traduzione della label interna "Vantaggi competitivi"
             label_vantaggi = {"it": "Vantaggi competitivi:", "en": "Competitive advantages:", "fr": "Avantages compétitifs :", "de": "Wettbewerbsvorteile:", "es": "Ventajas competitivas:"}
             st.text_area(label_vantaggi.get(lang, "Info:"), key="sb_kf", height=100)
             
-        # --- POLICY & FIRMA (BOX TRADOTTI) ---
+        # --- POLICY & FIRMA ---
         with st.expander(f"🛡️ {t('policy_firma')}", expanded=False):
-            # Traduzione della label interna "Firma finale"
             label_firma = {"it": "Firma finale:", "en": "Final signature:", "fr": "Signature finale :", "de": "Abschlussunterschrift:", "es": "Firma final:"}
             st.text_input(label_firma.get(lang, "Signature:"), placeholder="Il Team di...", key="sb_sig")
 
@@ -66,7 +76,9 @@ def render_sidebar():
                 
                 with col_del:
                     with st.popover("🗑️"):
-                        if st.button(t("confirm_del") if "confirm_del" in TRANSLATIONS else "Delete?", key=f"del_{i}", type="primary"):
+                        # Fallback sicuro per la traduzione della conferma eliminazione
+                        label_del = t("confirm_del")
+                        if st.button(label_del, key=f"del_{i}", type="primary"):
                             auth.delete_history_item(st.session_state.username, item[3])
                             st.rerun()
         else:
@@ -77,4 +89,5 @@ def render_sidebar():
         btn_logout = {"it": "🚪 Esci", "en": "🚪 Log out", "fr": "🚪 Déconnexion", "de": "🚪 Abmelden", "es": "🚪 Cerrar sesión"}
         if st.button(btn_logout.get(lang, "Exit"), use_container_width=True):
             st.session_state.auth = False
+            st.session_state.username = ""
             st.rerun()
