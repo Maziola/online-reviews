@@ -4,6 +4,8 @@ import openai
 from styles import get_logo_html, apply_custom_styles, apply_custom_font
 
 # --- COLLEGAMENTO A TRANSLATIONS E MODULI ---
+# Assicurati che translations.py sia nella stessa cartella di main.py
+import translations 
 from translations import t, LANG_MAP, t_list
 from sidebar import render_sidebar
 from admin_panel import render_admin_zone
@@ -13,19 +15,23 @@ st.set_page_config(page_title="Reviews Master Pro", layout="wide", page_icon="�
 apply_custom_font("Ubuntu")
 apply_custom_styles()
 
-# --- CONFIGURAZIONE OPENAI (Secrets) ---
+# --- CONFIGURAZIONE OPENAI ---
 try:
     openai.api_key = st.secrets["OPENAI_API_KEY"]
 except:
     pass
 
 # Inizializzazione sessione
-if "current_lang_code" not in st.session_state: st.session_state.current_lang_code = "it"
-if "auth" not in st.session_state: st.session_state.auth = False
-if "username" not in st.session_state: st.session_state.username = ""
-if "history_item" not in st.session_state: st.session_state.history_item = None
+if "current_lang_code" not in st.session_state: 
+    st.session_state.current_lang_code = "it"
+if "auth" not in st.session_state: 
+    st.session_state.auth = False
+if "username" not in st.session_state: 
+    st.session_state.username = ""
+if "history_item" not in st.session_state: 
+    st.session_state.history_item = None
 
-# Funzione per generare le risposte reali
+# Funzione per generare le risposte
 def genera_risposte_ai(recensione, contesto, tono, business_name, categoria):
     prompt = f"""
     Sei un esperto di Customer Care per un'attività di tipo {categoria} chiamata {business_name}.
@@ -36,16 +42,14 @@ def genera_risposte_ai(recensione, contesto, tono, business_name, categoria):
     Genera 3 varianti di risposta diverse. 
     Separa rigorosamente le varianti con il simbolo '###'.
     """
-    
     try:
         response = openai.chat.completions.create(
             model="gpt-3.5-turbo",
-            messages=[{"role": "system", "content": "Sei un assistente professionale che scrive risposte alle recensioni."},
+            messages=[{"role": "system", "content": "Sei un assistente professionale."},
                       {"role": "user", "content": prompt}],
             temperature=0.7
         )
-        testo_totale = response.choices[0].message.content
-        return testo_totale.split('###')
+        return response.choices[0].message.content.split('###')
     except Exception as e:
         return [f"Errore API: {str(e)}", "", ""]
 
@@ -55,7 +59,7 @@ if not st.session_state.auth:
     
     with col_r:
         lang_list = list(LANG_MAP.keys())
-        current_code = st.session_state.get("current_lang_code", "it")
+        current_code = st.session_state.current_lang_code
         try:
             current_index = list(LANG_MAP.values()).index(current_code)
         except:
@@ -69,14 +73,19 @@ if not st.session_state.auth:
     with col_m:
         st.markdown(get_logo_html(80), unsafe_allow_html=True)
         
-        # Tabs tradotte: richiamano correttamente la funzione t()
-        tab_login, tab_reg = st.tabs([t("login_tab"), t("reg_tab")])
+        # DEFINIZIONE TABS (Uso esplicito di t())
+        label_login = t("login_tab")
+        label_reg = t("reg_tab")
+        
+        tab_login, tab_reg = st.tabs([label_login, label_reg])
         
         with tab_login:
             with st.form("login_form"):
-                u = st.text_input(t("user_label"))
-                p = st.text_input(t("pass_label"), type="password")
-                if st.form_submit_button(t("btn_login"), use_container_width=True):
+                u = st.text_input(t("user_label"), key="login_user")
+                p = st.text_input(t("pass_label"), type="password", key="login_pass")
+                submit_l = st.form_submit_button(t("btn_login"), use_container_width=True)
+                
+                if submit_l:
                     success, status, rem = auth.check_auth(u, p)
                     if success:
                         st.session_state.auth = True
@@ -87,17 +96,17 @@ if not st.session_state.auth:
         
         with tab_reg:
             with st.form("registration_form"):
-                new_u = st.text_input(t("user_label"))
-                new_p = st.text_input(t("pass_label"), type="password")
-                if st.form_submit_button(t("btn_reg"), use_container_width=True):
+                new_u = st.text_input(t("user_label"), key="reg_user")
+                new_p = st.text_input(t("pass_label"), type="password", key="reg_pass")
+                submit_r = st.form_submit_button(t("btn_reg"), use_container_width=True)
+                
+                if submit_r:
                     ok, msg = auth.register_user(new_u, new_p)
-                    if ok: 
-                        st.success(msg)
-                    else: 
-                        st.error(msg)
+                    if ok: st.success(msg)
+                    else: st.error(msg)
     st.stop()
 
-# --- APP INTERNA ---
+# --- APP INTERNA (DOPO LOGIN) ---
 render_sidebar()
 st.markdown(get_logo_html(60), unsafe_allow_html=True)
 
@@ -105,22 +114,19 @@ if st.session_state.username.lower() == "admin":
     render_admin_zone()
     st.markdown("---")
 
-# Visualizzazione Storico o Generatore
 if st.session_state.history_item:
     item = st.session_state.history_item
     st.markdown('<div class="main-card">', unsafe_allow_html=True)
     st.subheader(f"📜 {t('last_analyses')}: {item[3]}")
     st.info(f"**{t('txt_rec')}**\n\n{item[1]}")
     st.success(f"**Risposta:**\n\n{item[2]}")
-    if st.button("🔙 Torna al Generatore"):
+    if st.button("🔙 Torna"):
         st.session_state.history_item = None
         st.rerun()
     st.markdown('</div>', unsafe_allow_html=True)
-
 else:
     st.markdown('<div class="main-card">', unsafe_allow_html=True)
-    st.markdown(t("dash_title"))
-
+    st.markdown(f"## {t('dash_title')}")
     col1, col2 = st.columns(2)
     with col1:
         rev_text = st.text_area(t("txt_rec"), height=180)
@@ -133,18 +139,14 @@ else:
                 b_name = st.session_state.get("sb_name", "Business")
                 b_cat = st.session_state.get("sb_cat", "General")
                 b_tone = st.session_state.get("sb_tone", "Professional")
-                
                 varianti = genera_risposte_ai(rev_text, ctx_text, b_tone, b_name, b_cat)
                 auth.save_review(st.session_state.username, b_cat, b_name, rev_text, varianti[0])
-
-                st.markdown("---")
                 st.success(t("success_msg"))
                 v_cols = st.columns(3)
                 for i, v in enumerate(varianti[:3]):
                     with v_cols[i]:
                         st.markdown(f"#### Opzione {i+1}")
                         st.write(v)
-                        st.button(f"Copia {i+1}", key=f"cp_{i}")
         else:
             st.warning(t("txt_rec"))
     st.markdown('</div>', unsafe_allow_html=True)
