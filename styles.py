@@ -46,7 +46,6 @@ def apply_custom_styles():
         /* =========================================================
             2. SOLUZIONE SIDEBAR TAGLIATA (FORZATURA LAYOUT)
         ========================================================= */
-        /* Questo blocco impedisce alla pagina di "schiacciare" la sidebar */
         [data-testid="stSidebar"] {
             min-width: 350px !important;
             max-width: 350px !important;
@@ -55,21 +54,18 @@ def apply_custom_styles():
             transition: none !important;
         }
         
-        /* Forza il contenitore principale a rispettare lo spazio della sidebar */
         [data-testid="stSidebarContent"] {
             width: 350px !important;
             visibility: visible !important;
         }
 
-        /* Nasconde i tasti di chiusura */
         [data-testid="sidebar-close-button"], button[kind="headerNoPadding"] {
             display: none !important;
         }
 
         /* =========================================================
-            3. RIMOZIONE BUG ICONE BLUASTRE (SOLUZIONE MIRATA)
+            3. RIMOZIONE BUG ICONE BLUASTRE
         ========================================================= */
-        /* Nasconde i testi residui senza rompere i widget */
         div[data-testid="stExpander"] svg + div,
         div[data-testid="stSelectbox"] svg + div,
         *:contains("keyboard_double"),
@@ -80,7 +76,7 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            4. DESIGN SIDEBAR (FONDO E TESTO BIANCO)
+            4. DESIGN SIDEBAR (INVARIATO)
         ========================================================= */
         [data-testid="stSidebar"], [data-testid="stSidebarContent"] {
             background-color: #4a5568 !important;
@@ -95,15 +91,27 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            5. AREA PRINCIPALE E SFONDO GRADIENTE
+            5. AREA PRINCIPALE E CAMBIO COLORI SPECIFICI (VERDE)
         ========================================================= */
         .stApp {
             background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
         }
 
+        /* Colore base verde petrolio per titoli generici */
         h1, h2, h3, h4, h5, label p, .stApp .stMarkdown p, .stApp span {
             color: #367588 !important;
             font-weight: bold !important;
+        }
+
+        /* MODIFICA RICHIESTA: Colore VERDE per scritte specifiche nell'area principale */
+        /* Pannello amministratore, Gestione attività, Generatore di risposte, ecc. */
+        .main h1, .main h2, .main h3, 
+        .main div[data-testid="stMarkdownContainer"] p:contains("Pannello amministratore"),
+        .main div[data-testid="stMarkdownContainer"] p:contains("Gestione attività"),
+        .main div[data-testid="stMarkdownContainer"] p:contains("Generatore di risposte"),
+        .main div[data-testid="stMarkdownContainer"] p:contains("Testo della recensione"),
+        .main div[data-testid="stMarkdownContainer"] p:contains("Contesto extra/note specifiche") {
+            color: #28a745 !important;
         }
 
         /* =========================================================
@@ -120,10 +128,10 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            7. PULSANTI (ACCESSO, REGISTRAZIONE E ALTRI)
+            7. PULSANTI (INVARIATO)
         ========================================================= */
         div.stButton > button, div.stFormSubmitButton > button {
-            background-color: #367588 !important; /* VERDE PETROLIO ORIGINALE */
+            background-color: #367588 !important;
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
             border-radius: 10px !important;
