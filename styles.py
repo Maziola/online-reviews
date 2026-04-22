@@ -2,9 +2,6 @@ import streamlit as st
 import base64
 import os
 
-# CONFIGURAZIONE PAGINA: Forza lo stato della sidebar su 'expanded' (sempre aperta)
-st.set_page_config(initial_sidebar_state="expanded")
-
 def apply_custom_font(font_name="Ubuntu"):
     font_url = font_name.replace(" ", "+")
     st.markdown(f"""
@@ -24,6 +21,7 @@ def get_logo_html(size=100):
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as f:
             data = base64.b64encode(f.read()).decode("utf-8")
+        # MODIFICA: Eliminato margin-bottom negativo per evitare sovrapposizioni
         return f'''
             <div style="display: flex; justify-content: center; align-items: center; padding-bottom: 10px; margin-bottom: 10px;">
                 <img src="data:image/png;base64,{data}" style="width: {size*5}px; height: auto; object-fit: contain;">
@@ -60,26 +58,34 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            SIDEBAR FISSA E RIMOZIONE PULSANTE CHIUSURA
+            SIDEBAR FISSA: RIMOZIONE PULSANTI DI CHIUSURA/APERTURA
         ========================================================= */
-        /* Nasconde il pulsante "X" per chiudere la sidebar, rendendola di fatto fissa */
+        /* Nasconde la 'X' per chiudere la sidebar */
         [data-testid="sidebar-close-button"] {
             display: none !important;
         }
         
-        /* Assicura che la sidebar non possa essere collassata via CSS */
-        [data-testid="stSidebar"][aria-expanded="false"] {
+        /* Nasconde il pulsante '>' (chevron) che permette di riaprire/chiudere */
+        button[kind="headerNoPadding"] {
+            display: none !important;
+        }
+        
+        /* Impedisce il collasso della sidebar via CSS */
+        [data-testid="stSidebar"] {
+            min-width: 350px !important;
             margin-left: 0px !important;
         }
 
         /* =========================================================
             PATCH: FIX SPAZIATURA E SOVRAPPOSIZIONI
         ========================================================= */
+        /* MODIFICA: padding-top a 2rem per distanziare il logo dal bordo superiore */
         .block-container {
             padding-top: 2rem !important;
             padding-bottom: 0rem !important;
         }
         
+        /* MODIFICA: gap impostato a 1rem per evitare che le scritte si attacchino agli input */
         [data-testid="stVerticalBlock"] > div:has(div[class*="stMarkdown"]) {
             gap: 1rem !important;
         }
@@ -87,6 +93,7 @@ def apply_custom_styles():
         /* =========================================================
             PATCH: ELIMINAZIONE SCRITTE SOVRAPPOSTE (SOLUZIONE RADICALE)
         ========================================================= */
+        /* 1. Rimozione standard */
         div[data-baseweb="select"] ~ span > div:last-child,
         div[data-baseweb="select"] + div svg,
         div[data-testid="stSelectbox"] div[role="button"] > div:last-child,
@@ -95,6 +102,8 @@ def apply_custom_styles():
             visibility: hidden !important;
         }
 
+        /* 2. Forzatura invisibilità (Trasparenza e dimensione zero) per scritte residue */
+        /* Questo colpisce 'arrow_right', 'keyboard_double', ecc. se appaiono come testo */
         div[data-testid="stExpander"] p:empty,
         div[aria-expanded="true"] > div > svg + div,
         div[aria-expanded="false"] > div > svg + div,

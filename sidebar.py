@@ -3,6 +3,25 @@ from translations import t, t_list, LANG_MAP
 import auth_handler as auth
 
 def render_sidebar():
+    # CSS per bloccare la sidebar e rimuovere i tasti di chiusura (X e Chevron)
+    st.markdown("""
+        <style>
+            /* Rimuove il tasto 'X' all'interno della sidebar */
+            [data-testid="sidebar-close-button"] {
+                display: none !important;
+            }
+            /* Rimuove il tasto '>' (chevron) che appare nell'header quando la sidebar è chiusa */
+            button[kind="headerNoPadding"] {
+                display: none !important;
+            }
+            /* Forza la sidebar a mantenere la sua larghezza senza transizioni di chiusura */
+            [data-testid="stSidebar"] {
+                min-width: 350px !important;
+                margin-left: 0px !important;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
     with st.sidebar:
         # 1. SELETTORE LINGUA
         current_code = st.session_state.get("current_lang_code", "it")
@@ -37,7 +56,7 @@ def render_sidebar():
             key="sb_cat"
         )
 
-        # Tono della risposta (CORRETTO: ora si aggiorna al cambio lingua)
+        # Tono della risposta
         st.selectbox(
             t("tone_label"), 
             options=t_list("tones"), 
@@ -76,7 +95,6 @@ def render_sidebar():
                 
                 with col_del:
                     with st.popover("🗑️"):
-                        # Fallback sicuro per la traduzione della conferma eliminazione
                         label_del = t("confirm_del")
                         if st.button(label_del, key=f"del_{i}", type="primary"):
                             auth.delete_history_item(st.session_state.username, item[3])
