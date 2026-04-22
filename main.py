@@ -3,6 +3,13 @@ import auth_handler as auth
 import openai
 from styles import get_logo_html, apply_custom_styles, apply_custom_font
 
+# 1. Inizializza il client leggendo la chiave dai Secrets che hai impostato prima
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+
+# 2. Poi segue la funzione che abbiamo corretto prima
+def genera_risposte_ai(review_text, extra_context, tone, biz_name, category):
+    varianti = []
+
 # --- COLLEGAMENTO A TRANSLATIONS E MODULI ---
 # Assicurati che translations.py sia nella stessa cartella di main.py
 import translations 
