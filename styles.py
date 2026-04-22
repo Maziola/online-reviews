@@ -61,7 +61,7 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            4. AREA SIDEBAR: RIMANE BIANCA
+            4. AREA SIDEBAR: PROGRAMMABILE (BIANCO)
         ========================================================= */
         [data-testid="stSidebarContent"] * {
             color: #FFFFFF !important;
@@ -69,38 +69,36 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            5. AREA MAIN: TUTTO IN VERDE (Login + Pannello + Generatore)
+            5. AREA MAIN: PROGRAMMABILE (VERDE)
         ========================================================= */
         .stApp {
             background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
         }
 
-        /* Forza il VERDE su: Accesso, Registrazione, Nome utente, Password, 
-           Pannello Amministratore, Gestione Attività, Generatore, ecc.
-        */
-        .main h1, .main h2, .main h3, .main h4, .main h5,
-        .main label, .main label p, 
-        .main [data-testid="stMarkdownContainer"] p,
-        .main .stTabs [data-baseweb="tab"] {
+        .main [data-testid="stVerticalBlock"] * {
             color: #28a745 !important;
             -webkit-text-fill-color: #28a745 !important;
-            font-weight: bold !important;
         }
 
         /* =========================================================
-            6. RIPRISTINO ECCEZIONI (Testo Input e Pulsanti)
+            6. ECCEZIONI E RIPRISTINI (BOTTONI E INPUT)
         ========================================================= */
         
-        /* Testo dentro i campi di input e select: deve restare NERO */
-        .main input, .main textarea, .main [data-baseweb="select"] div {
-            color: #000000 !important;
-            -webkit-text-fill-color: #000000 !important;
-        }
-
-        /* Testo dei pulsanti: deve restare BIANCO */
+        /* Testo dei pulsanti: resta bianco */
         .main .stButton button *, .main .stFormSubmitButton button * {
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
+        }
+
+        /* MODIFICA RICHIESTA: Testo dentro i box di input DIVENTA VERDE */
+        div[data-baseweb="base-input"] input, 
+        div[data-baseweb="base-input"] textarea,
+        div[data-baseweb="select"] > div,
+        .stTextInput input, .stTextArea textarea {
+            background-color: #FFFFFF !important;
+            color: #28a745 !important; /* Testo scritto in verde */
+            -webkit-text-fill-color: #28a745 !important; /* Forza il colore su Chrome/Safari */
+            border-radius: 12px !important;
         }
 
         /* 7. DESIGN PULSANTI (VERDE PETROLIO) */
