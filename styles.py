@@ -21,7 +21,6 @@ def get_logo_html(size=100):
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as f:
             data = base64.b64encode(f.read()).decode("utf-8")
-        # MODIFICA: Eliminato margin-bottom negativo per evitare sovrapposizioni
         return f'''
             <div style="display: flex; justify-content: center; align-items: center; padding-bottom: 10px; margin-bottom: 10px;">
                 <img src="data:image/png;base64,{data}" style="width: {size*5}px; height: auto; object-fit: contain;">
@@ -58,21 +57,40 @@ def apply_custom_styles():
         }
 
         /* =========================================================
+            FIX EMERGENZA SIDEBAR: RIPRISTINO TRIGGER APERTURA
+        ========================================================= */
+        /* Questa regola forza la visibilità del pulsante per riaprire la sidebar (chevron) */
+        section[data-testid="stSidebar"] + div > button,
+        button[kind="headerNoPadding"] {
+            display: flex !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            background-color: #367588 !important;
+            color: white !important;
+            border-radius: 0 10px 10px 0 !important;
+            z-index: 999999 !important;
+        }
+        
+        /* Nasconde il testo dell'icona (keyboard_double...) ma non il pulsante stesso */
+        button[kind="headerNoPadding"] div {
+            font-size: 0px !important;
+            color: transparent !important;
+        }
+
+        /* =========================================================
             PATCH: FIX SPAZIATURA E SOVRAPPOSIZIONI
         ========================================================= */
-        /* MODIFICA: padding-top a 2rem per distanziare il logo dal bordo superiore */
         .block-container {
             padding-top: 2rem !important;
             padding-bottom: 0rem !important;
         }
         
-        /* MODIFICA: gap impostato a 1rem per evitare che le scritte si attacchino agli input */
         [data-testid="stVerticalBlock"] > div:has(div[class*="stMarkdown"]) {
             gap: 1rem !important;
         }
 
         /* =========================================================
-            PATCH: ELIMINAZIONE SCRITTE SOVRAPPOSTE
+            PATCH: ELIMINAZIONE SCRITTE SOVRAPPOSTE (SOLUZIONE RADICALE)
         ========================================================= */
         div[data-baseweb="select"] ~ span > div:last-child,
         div[data-baseweb="select"] + div svg,
@@ -80,6 +98,21 @@ def apply_custom_styles():
         div[data-testid="stExpander"] svg {
             display: none !important;
             visibility: hidden !important;
+        }
+
+        div[data-testid="stExpander"] p:empty,
+        div[aria-expanded="true"] > div > svg + div,
+        div[aria-expanded="false"] > div > svg + div,
+        *:contains("arrow_right"), 
+        *:contains("keyboard_double") {
+            color: transparent !important;
+            font-size: 0px !important;
+            line-height: 0 !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            user-select: none !important;
+            pointer-events: none !important;
+            text-indent: -9999px !important;
         }
 
         /* =========================================================
@@ -97,23 +130,11 @@ def apply_custom_styles():
             background-image: none !important;
         }
 
-        [data-testid="stSidebar"] div[data-testid="stWidgetLabel"] p,
-        [data-testid="stSidebar"] label p,
-        [data-testid="stSidebar"] label {
-            color: #FFFFFF !important;
-            font-weight: 700 !important;
-            opacity: 1 !important;
-        }
-
+        [data-testid="stSidebar"] label,
         [data-testid="stSidebar"] .stMarkdown p, 
         [data-testid="stSidebar"] span, 
-        [data-testid="stSidebar"] .stCaption,
         [data-testid="stSidebar"] p,
-        [data-testid="stSidebar"] h1, 
-        [data-testid="stSidebar"] h2, 
-        [data-testid="stSidebar"] h3,
-        [data-testid="stSidebar"] h4, 
-        [data-testid="stSidebar"] h5 {
+        [data-testid="stSidebar"] h3 {
             color: #FFFFFF !important;
             font-weight: 600 !important;
         }
@@ -130,15 +151,8 @@ def apply_custom_styles():
             font-weight: bold !important;
         }
 
-        [data-testid="stSidebar"] label p,
-        [data-testid="stSidebar"] h3,
-        [data-testid="stSidebar"] p,
-        [data-testid="stSidebar"] .stMarkdown p {
-            color: #FFFFFF !important;
-        }
-
         /* =========================================================
-            4. INPUT, TEXTAREA E SELECTBOX - SFONDO BIANCO E TESTO NERO
+            4. INPUT, TEXTAREA E SELECTBOX
         ========================================================= */
         div[data-baseweb="base-input"] input, 
         div[data-baseweb="base-input"] textarea,
@@ -153,10 +167,6 @@ def apply_custom_styles():
             border: 1px solid #CBD5E1 !important;
         }
 
-        div[data-testid="stSelectbox"] p, div[data-testid="stSelectbox"] div {
-            color: #000000 !important;
-        }
-
         /* =========================================================
             5. CARD BIANCA (Dashboard)
         ========================================================= */
@@ -167,10 +177,6 @@ def apply_custom_styles():
             padding: 40px !important;
         }
         
-        .main-card .stMarkdown p {
-            color: #000000 !important;
-        }
-
         /* =========================================================
             6. PULSANTI
         ========================================================= */
@@ -178,33 +184,19 @@ def apply_custom_styles():
         div.stFormSubmitButton > button {
             background-color: #367588 !important;
             color: #FFFFFF !important;
-            -webkit-text-fill-color: #FFFFFF !important;
             border-radius: 10px !important;
             font-weight: 700 !important;
             border: none !important;
         }
 
-        div.stButton > button:hover {
-            background-color: #2a5d6d !important;
-        }
-
         /* =========================================================
-            7. FIX NOTIFICHE (GIALLO CHIARO) E VARIANTI
+            7. FIX NOTIFICHE
         ========================================================= */
         [data-testid="stNotification"] {
             background-color: #fff9c4 !important;
             color: #5d4037 !important;
             border: 1px solid #fff176 !important;
             border-radius: 10px !important;
-        }
-        
-        [data-testid="stNotification"] p {
-            color: #5d4037 !important;
-            font-weight: 600 !important;
-        }
-
-        .variant-card p {
-            color: #367588 !important;
         }
     </style>
     """, unsafe_allow_html=True)
