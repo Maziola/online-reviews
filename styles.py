@@ -44,8 +44,9 @@ def apply_custom_styles():
         footer { display: none !important; }
 
         /* =========================================================
-            2. SIDEBAR FISSA E RIMOZIONE CURSORE SPOSTAMENTO
+            2. SIDEBAR FISSA E RIMOZIONE FRECCE (CHEVRONS)
         ========================================================= */
+        /* Blocca la sidebar ed elimina le frecce di chiusura/spostamento */
         [data-testid="stSidebar"] {
             min-width: 350px !important;
             max-width: 350px !important;
@@ -54,53 +55,66 @@ def apply_custom_styles():
             transition: none !important;
         }
         
-        /* RIMOZIONE DEFINITIVA DELLE FRECCE DI RIDIMENSIONAMENTO/SPOSTAMENTO */
-        /* Nasconde l'elemento di drag e disabilita il cursore orizzontale */
-        [data-testid="stSidebarResizer"] {
-            display: none !important;
-            visibility: hidden !important;
-        }
-        
-        [data-testid="stSidebar"] svg, 
+        /* RIMOZIONE DEFINITIVA DELLE FRECCE NERE (SIDEBAR CHEVRONS) E RESIZER */
         [data-testid="sidebar-close-button"], 
-        button[kind="headerNoPadding"] {
+        button[kind="headerNoPadding"],
+        [data-testid="stSidebarResizer"],
+        [data-testid="stSidebar"] svg {
             display: none !important;
         }
 
+        /* Forza la visibilità del contenuto interno */
+        [data-testid="stSidebarContent"] {
+            width: 350px !important;
+            visibility: visible !important;
+        }
+
         /* =========================================================
-            3. SIDEBAR: COLORE SCRITTE BIANCO (RICHIESTA SPECIFICA)
+            3. RIMOZIONE BUG ICONE E TESTI RESIDUI
+        ========================================================= */
+        div[data-testid="stExpander"] svg + div,
+        div[data-testid="stSelectbox"] svg + div,
+        *:contains("keyboard_double"),
+        *:contains("arrow_right") {
+            display: none !important;
+            font-size: 0px !important;
+            color: transparent !important;
+        }
+
+        /* =========================================================
+            4. DESIGN SIDEBAR: SOLO TESTO BIANCO (RICHIESTA SPECIFICA)
         ========================================================= */
         [data-testid="stSidebar"], [data-testid="stSidebarContent"] {
             background-color: #4a5568 !important;
         }
 
-        /* Forza bianco per titoli, paragrafi, caption e label widget */
+        /* Selettore specifico per forzare il bianco solo sugli elementi della sidebar */
         [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, 
         [data-testid="stSidebar"] h3, [data-testid="stSidebar"] h4, 
         [data-testid="stSidebar"] h5, [data-testid="stSidebar"] p,
-        [data-testid="stSidebar"] label, [data-testid="stSidebar"] .stCaption,
-        [data-testid="stSidebar"] span, [data-testid="stSidebar"] .stMarkdown p {
+        [data-testid="stSidebar"] label, [data-testid="stSidebar"] span,
+        [data-testid="stSidebar"] .stMarkdown p, [data-testid="stSidebar"] .stCaption {
             color: #FFFFFF !important;
+            font-weight: 700 !important;
             opacity: 1 !important;
-            font-weight: 600 !important;
         }
 
         /* =========================================================
-            4. AREA PRINCIPALE E SFONDO GRADIENTE
+            5. AREA PRINCIPALE E SFONDO GRADIENTE (INVARIATO)
         ========================================================= */
         .stApp {
             background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
         }
 
-        /* Titoli area destra e login in verde petrolio */
+        /* Colore verde petrolio per i testi del menu principale */
         .main h1, .main h2, .main h3, .main h4, .main h5, 
-        .main label p, .stApp .main .stMarkdown p, .stApp .main span {
+        .main label p, .main .stMarkdown p, .main span {
             color: #367588 !important;
             font-weight: bold !important;
         }
 
         /* =========================================================
-            5. WIDGET (INPUT BIANCHI / TESTO NERO)
+            6. WIDGET (INPUT BIANCHI / TESTO NERO)
         ========================================================= */
         div[data-baseweb="base-input"] input, 
         div[data-baseweb="base-input"] textarea,
@@ -113,7 +127,7 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            6. PULSANTI (ACCESSO E REGISTRAZIONE - VERDE PETROLIO)
+            7. PULSANTI (ACCESSO E REGISTRAZIONE - VERDE PETROLIO)
         ========================================================= */
         div.stButton > button, div.stFormSubmitButton > button {
             background-color: #367588 !important;
@@ -127,10 +141,12 @@ def apply_custom_styles():
 
         div.stButton > button:hover {
             background-color: #2a5d6d !important;
+            color: #FFFFFF !important;
+            -webkit-text-fill-color: #FFFFFF !important;
         }
 
         /* =========================================================
-            7. CARD E NOTIFICHE
+            8. CARD E NOTIFICHE
         ========================================================= */
         .main-card {
             background-color: #FFFFFF !important;
