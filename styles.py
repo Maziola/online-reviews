@@ -58,16 +58,19 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            FIX EMERGENZA: RIPRISTINO TRIGGER SIDEBAR
+            FIX EMERGENZA: RIPRISTINO PULSANTE APERTURA SIDEBAR
         ========================================================= */
-        /* Questo assicura che il pulsante per riaprire la sidebar sia cliccabile */
+        /* Questo blocca la scomparsa del tasto per riaprire la sidebar quando è chiusa */
+        section[data-testid="stSidebar"] + div > button, 
         button[kind="headerNoPadding"] {
             display: flex !important;
             visibility: visible !important;
             opacity: 1 !important;
-            background-color: #367588 !important;
+            background-color: #367588 !important; /* Verde petrolio per vederlo bene */
             color: white !important;
             z-index: 999999 !important;
+            left: 10px !important;
+            top: 10px !important;
         }
 
         /* =========================================================
@@ -85,9 +88,9 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            PATCH: ELIMINAZIONE SCRITTE SOVRAPPOSTE (MODALITÀ INVISIBILE)
+            PATCH: ELIMINAZIONE SCRITTE SOVRAPPOSTE (SOLUZIONE RADICALE)
         ========================================================= */
-        /* 1. Rimozione standard icone */
+        /* 1. Rimozione standard */
         div[data-baseweb="select"] ~ span > div:last-child,
         div[data-baseweb="select"] + div svg,
         div[data-testid="stSelectbox"] div[role="button"] > div:last-child,
@@ -96,10 +99,11 @@ def apply_custom_styles():
             visibility: hidden !important;
         }
 
-        /* 2. Soluzione specifica per scritte residue (keyboard_double, arrow_right) */
-        /* Invece di rimuoverle, le rendiamo trasparenti e grandi 0px */
+        /* 2. Forzatura invisibilità (Trasparenza e dimensione zero) per scritte residue */
+        /* Invece di display:none, usiamo font-size:0 così il tasto rimane cliccabile ma il testo sparisce */
         div[data-testid="stExpander"] p:empty,
-        div[aria-expanded] > div > svg + div,
+        div[aria-expanded="true"] > div > svg + div,
+        div[aria-expanded="false"] > div > svg + div,
         *:contains("arrow_right"), 
         *:contains("keyboard_double") {
             color: transparent !important;
@@ -107,9 +111,9 @@ def apply_custom_styles():
             line-height: 0 !important;
             visibility: hidden !important;
             opacity: 0 !important;
-            text-indent: -9999px !important;
             user-select: none !important;
             pointer-events: none !important;
+            text-indent: -9999px !important;
         }
 
         /* =========================================================
