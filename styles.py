@@ -61,50 +61,53 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            4. AREA SIDEBAR: PROGRAMMABILE (BIANCO)
+            4. AREA SIDEBAR: TESTI BIANCHI
         ========================================================= */
-        /* Selettore mirato esclusivamente alla Sidebar */
         [data-testid="stSidebarContent"] * {
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
         }
 
         /* =========================================================
-            5. AREA MAIN: PROGRAMMABILE (VERDE)
+            5. AREA MAIN: TESTI VERDI (Pannello, Etichette, Login)
         ========================================================= */
         .stApp {
             background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
         }
 
-        /* Selettore mirato esclusivamente al blocco Main (Login, Amministratore, Generatore) */
-        /* Cambia il colore qui sotto per modificare solo il corpo centrale */
+        /* Tutte le scritte informative e label diventano VERDI */
         .main [data-testid="stVerticalBlock"] * {
             color: #28a745 !important;
             -webkit-text-fill-color: #28a745 !important;
         }
 
         /* =========================================================
-            6. ECCEZIONI E RIPRISTINI (BOTTONI E INPUT)
+            6. RIPRISTINO NERO PER IL CONTENUTO DEI WIDGET
         ========================================================= */
         
-        /* Testo dei pulsanti: deve restare bianco indipendentemente dal Main */
+        /* Testo all'interno di Categoria, Tono della risposta, Nome utente, ecc. */
+        /* Questo garantisce che il font interno rimanga NERO su sfondo BIANCO */
+        div[data-baseweb="base-input"] input, 
+        div[data-baseweb="base-input"] textarea,
+        div[data-baseweb="select"] [data-testid="stMarkdownContainer"] p,
+        div[data-baseweb="select"] span,
+        div[data-baseweb="select"] div,
+        .stTextInput input, .stTextArea textarea {
+            color: #000000 !important;
+            -webkit-text-fill-color: #000000 !important;
+            background-color: #FFFFFF !important;
+        }
+
+        /* =========================================================
+            7. PULSANTI E CARD
+        ========================================================= */
+        
+        /* Forza il bianco solo per il testo dei pulsanti */
         .main .stButton button *, .main .stFormSubmitButton button * {
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
         }
 
-        /* Testo dentro i widget di input: deve restare nero */
-        div[data-baseweb="base-input"] input, 
-        div[data-baseweb="base-input"] textarea,
-        div[data-baseweb="select"] > div,
-        .stTextInput input, .stTextArea textarea {
-            background-color: #FFFFFF !important;
-            color: #000000 !important;
-            -webkit-text-fill-color: #000000 !important;
-            border-radius: 12px !important;
-        }
-
-        /* 7. DESIGN PULSANTI (VERDE PETROLIO) */
         div.stButton > button, div.stFormSubmitButton > button {
             background-color: #367588 !important;
             border-radius: 10px !important;
@@ -113,7 +116,6 @@ def apply_custom_styles():
             width: 100%;
         }
 
-        /* 8. CARD */
         .main-card {
             background-color: #FFFFFF !important;
             border-radius: 20px !important;
@@ -121,4 +123,4 @@ def apply_custom_styles():
             box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
         }
     </style>
-    """, unsafe_allow_html=True)    
+    """, unsafe_allow_html=True)
