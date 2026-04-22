@@ -40,7 +40,24 @@ TRANSLATIONS = {
     "txt_rec": {"it": "Testo della recensione:", "en": "Review text:", "fr": "Texte de l'avis :", "de": "Bewertungstext:", "es": "Texto de la reseña:"},
     "extra_ctx": {"it": "Contesto extra / Note specifiche:", "en": "Extra context / Specific notes:", "fr": "Contexte supplémentaire / Notes :", "de": "Extra-Kontext / Spezifische Notizen:", "es": "Contexto extra / Notas específicas:"},
     "success_msg": {"it": "✅ Risposte generate e archiviate!", "en": "✅ Replies generated!", "fr": "✅ Réponses générées !", "de": "✅ Generiert!", "es": "✅ ¡Generadas!"},
+    "btn_copy": {"it": "Copia Opzione", "en": "Copy Option", "fr": "Copier l'option", "de": "Option kopieren", "es": "Copiar opción"},
     
+    # PLACEHOLDERS
+    "ph_review": {
+        "it": "Incolla qui la recensione...",
+        "en": "Paste the review here...",
+        "fr": "Collez l'avis ici...",
+        "de": "Fügen Sie die Bewertung hier ein...",
+        "es": "Pegue la reseña aquí..."
+    },
+    "ph_context": {
+        "it": "Esempio: Offri uno sconto del 10%...",
+        "en": "Example: Offer a 10% discount...",
+        "fr": "Exemple : Offrez une remise de 10%...",
+        "de": "Beispiel: Bieten Sie 10% Rabatt an...",
+        "es": "Ejemplo: Ofrezca un 10% de descuento..."
+    },
+
     # SIDEBAR
     "prof_biz": {"it": "Profilo Attività", "en": "Business Profile", "fr": "Profil Entreprise", "de": "Unternehmensprofil", "es": "Perfil de Empresa"},
     "biz_name": {"it": "Nome Business:", "en": "Business Name:", "fr": "Nom de l'entreprise :", "de": "Name des Unternehmens:", "es": "Nombre de la empresa:"},
@@ -49,8 +66,8 @@ TRANSLATIONS = {
     "punti_forza": {"it": "Punti di forza", "en": "Strengths", "fr": "Points forts", "de": "Stärken", "es": "Puntos fuertes"},
     "policy_firma": {"it": "Policy e Firma", "en": "Policy & Signature", "fr": "Politique et Signature", "de": "Richtlinien & Signatur", "es": "Política y Firma"},
     "lang_app": {"it": "Lingua App", "en": "App Language", "fr": "Langue de l'App", "de": "App-Sprache", "es": "Idioma de la App"},
-    "last_analyses": {"it": "Ultime analisi", "en": "Last analyses", "fr": "Dernières analyses", "de": "Letzte Analysen", "es": "Últimas análisis"},
-    "no_analyses": {"it": "Nessuna analisi salvata", "en": "No saved analyses", "fr": "Aucune analyse enregistrée", "de": "Keine gespeicherten Analysen", "es": "No hay análisis guardados"},
+    "last_analyses": {"it": "Ultime analisi", "en": "Last analyses", "fr": "Dernières analyses", "de": "Letzte Analysen", "es": "Últimas analisi"},
+    "no_analyses": {"it": "Nessuna analisi salvata", "en": "No saved analyses", "fr": "Aucune analyse enregistrée", "de": "Keine gespeicherten Analysen", "es": "No hay analisi guardados"},
     "confirm_del": {"it": "Eliminare?", "en": "Delete?", "fr": "Supprimer?", "de": "Löschen?", "es": "¿Eliminar?"},
 
     # AUTH & LOGIN
@@ -66,11 +83,9 @@ TRANSLATIONS = {
 def t(key):
     """ Ottiene la traduzione testuale """
     lang_code = st.session_state.get("current_lang_code", "it")
-    # Fallback all'italiano se la lingua non esiste per quella chiave, poi alla chiave stessa
     return TRANSLATIONS.get(key, {}).get(lang_code, TRANSLATIONS.get(key, {}).get("it", key))
 
 def t_list(key):
     """ Ottiene le liste tradotte (Categorie/Toni) """
     lang_code = st.session_state.get("current_lang_code", "it")
-    # Fallback all'inglese, poi italiano
     return LISTS.get(key, {}).get(lang_code, LISTS.get(key, {}).get("en", LISTS.get(key, {}).get("it", [])))
