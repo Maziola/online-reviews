@@ -61,52 +61,51 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            4. COLORI BLOCCO SIDEBAR (TUTTO BIANCO)
+            4. AREA SIDEBAR: RIMANE BIANCA
         ========================================================= */
-        /* Colpisce ogni elemento dentro la sidebar e lo forza al bianco */
         [data-testid="stSidebarContent"] * {
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
         }
 
         /* =========================================================
-            5. COLORI BLOCCO MAIN (TUTTO VERDE)
+            5. AREA MAIN: TUTTO IN VERDE (Login + Pannello + Generatore)
         ========================================================= */
         .stApp {
             background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
         }
 
-        /* FORZATURA TOTALE: Ogni testo (*) dentro la classe .main diventa VERDE */
-        .main * {
+        /* Forza il VERDE su: Accesso, Registrazione, Nome utente, Password, 
+           Pannello Amministratore, Gestione Attività, Generatore, ecc.
+        */
+        .main h1, .main h2, .main h3, .main h4, .main h5,
+        .main label, .main label p, 
+        .main [data-testid="stMarkdownContainer"] p,
+        .main .stTabs [data-baseweb="tab"] {
             color: #28a745 !important;
             -webkit-text-fill-color: #28a745 !important;
-        }
-
-        /* Eccezione: manteniamo il testo dei pulsanti nel main bianco se necessario */
-        .main .stButton button * {
-            color: #FFFFFF !important;
-            -webkit-text-fill-color: #FFFFFF !important;
+            font-weight: bold !important;
         }
 
         /* =========================================================
-            6. WIDGET (INPUT BIANCHI / TESTO NERO)
+            6. RIPRISTINO ECCEZIONI (Testo Input e Pulsanti)
         ========================================================= */
-        /* Qui forziamo il nero perché il selettore .main * di sopra li renderebbe verdi */
-        div[data-baseweb="base-input"] input, 
-        div[data-baseweb="base-input"] textarea,
-        div[data-baseweb="select"] > div,
-        .stTextInput input, .stTextArea textarea {
-            background-color: #FFFFFF !important;
+        
+        /* Testo dentro i campi di input e select: deve restare NERO */
+        .main input, .main textarea, .main [data-baseweb="select"] div {
             color: #000000 !important;
             -webkit-text-fill-color: #000000 !important;
-            border-radius: 12px !important;
         }
 
-        /* 7. PULSANTI (VERDE PETROLIO) */
-        div.stButton > button, div.stFormSubmitButton > button {
-            background-color: #367588 !important;
+        /* Testo dei pulsanti: deve restare BIANCO */
+        .main .stButton button *, .main .stFormSubmitButton button * {
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
+        }
+
+        /* 7. DESIGN PULSANTI (VERDE PETROLIO) */
+        div.stButton > button, div.stFormSubmitButton > button {
+            background-color: #367588 !important;
             border-radius: 10px !important;
             font-weight: 700 !important;
             border: none !important;
