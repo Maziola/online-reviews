@@ -37,7 +37,7 @@ def apply_custom_styles():
             visibility: hidden !important;
         }
 
-        /* 2. SIDEBAR FISSA E RIMOZIONE ICONE INTERNE */
+        /* 2. SIDEBAR FISSA E RIMOZIONE ICONE */
         [data-testid="stSidebar"] {
             min-width: 350px !important;
             max-width: 350px !important;
@@ -61,42 +61,37 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            4. COLORI BLOCCO SIDEBAR (RESTANO BIANCHI)
+            4. COLORI BLOCCO SIDEBAR (TUTTO BIANCO)
         ========================================================= */
+        /* Colpisce ogni elemento dentro la sidebar e lo forza al bianco */
         [data-testid="stSidebarContent"] * {
             color: #FFFFFF !important;
-        }
-        
-        [data-testid="stSidebar"] label p, 
-        [data-testid="stSidebar"] .stMarkdown p,
-        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3,
-        [data-testid="stSidebar"] .stCaption,
-        [data-testid="stSidebar"] span {
-            color: #FFFFFF !important;
-            font-weight: 700 !important;
+            -webkit-text-fill-color: #FFFFFF !important;
         }
 
         /* =========================================================
-            5. COLORI BLOCCO MAIN (FORZATURA VERDE)
+            5. COLORI BLOCCO MAIN (TUTTO VERDE)
         ========================================================= */
         .stApp {
             background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
         }
 
-        /* Selettore ultra-specifico per forzare il VERDE su testi e label nel Main */
-        .main [data-testid="stMarkdownContainer"] p, 
-        .main [data-testid="stWidgetLabel"] p,
-        .main label, 
-        .main span,
-        .main h1, .main h2, .main h3 {
+        /* FORZATURA TOTALE: Ogni testo (*) dentro la classe .main diventa VERDE */
+        .main * {
             color: #28a745 !important;
             -webkit-text-fill-color: #28a745 !important;
-            font-weight: bold !important;
+        }
+
+        /* Eccezione: manteniamo il testo dei pulsanti nel main bianco se necessario */
+        .main .stButton button * {
+            color: #FFFFFF !important;
+            -webkit-text-fill-color: #FFFFFF !important;
         }
 
         /* =========================================================
-            6. WIDGET E PULSANTI (INVARIATI)
+            6. WIDGET (INPUT BIANCHI / TESTO NERO)
         ========================================================= */
+        /* Qui forziamo il nero perché il selettore .main * di sopra li renderebbe verdi */
         div[data-baseweb="base-input"] input, 
         div[data-baseweb="base-input"] textarea,
         div[data-baseweb="select"] > div,
@@ -107,6 +102,7 @@ def apply_custom_styles():
             border-radius: 12px !important;
         }
 
+        /* 7. PULSANTI (VERDE PETROLIO) */
         div.stButton > button, div.stFormSubmitButton > button {
             background-color: #367588 !important;
             color: #FFFFFF !important;
@@ -117,6 +113,7 @@ def apply_custom_styles():
             width: 100%;
         }
 
+        /* 8. CARD */
         .main-card {
             background-color: #FFFFFF !important;
             border-radius: 20px !important;
