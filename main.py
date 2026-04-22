@@ -36,11 +36,18 @@ if "history_item" not in st.session_state:
 def genera_risposte_ai(review_text, extra_context, tone, biz_name, category):
     varianti = []
     
+    # Recuperiamo il codice lingua corrente (it, en, fr, etc.)
+    lang_code = st.session_state.get("current_lang_code", "it")
+    
     prompt_base = f"""
     Sei un esperto di customer care per un'attività di tipo {category} chiamata {biz_name}.
-    Rispondi a questa recensione: "{review_text}"
-    Tono richiesto: {tone}.
-    Dettagli aggiuntivi da includere: {extra_context}.
+    
+    COMPITO: Rispondi a questa recensione: "{review_text}"
+    
+    REGOLE OBBLIGATORIE:
+    1. LINGUA: Rispondi nella STESSA LINGUA della recensione (se la recensione è in inglese, rispondi in inglese).
+    2. TONO: Usa un tono {tone}.
+    3. DETTAGLI: Includi questi punti se presenti: {extra_context}.
     """
 
     for i in range(3):
@@ -48,10 +55,10 @@ def genera_risposte_ai(review_text, extra_context, tone, biz_name, category):
             response = client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
-                    {"role": "system", "content": "Sei un assistente professionale che scrive risposte alle recensioni."},
-                    {"role": "user", "content": f"{prompt_base}\nGenera la variante numero {i+1}. Deve essere diversa dalle altre."}
+                    {"role": "system", "content": f"Sei un assistente professionale. Scrivi la risposta nella lingua originale della recensione."},
+                    {"role": "user", "content": f"{prompt_base}\nGenera la variante numero {i+1} diversa dalle precedenti."}
                 ],
-                temperature=0.8 # Leggermente più alta per favorire la diversità tra varianti
+                temperature=0.8
             )
             varianti.append(response.choices[0].message.content)
         except Exception as e:
