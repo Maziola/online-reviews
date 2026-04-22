@@ -41,7 +41,7 @@ def render_sidebar():
         st.selectbox(
             t("tone_label"), 
             options=t_list("tones"), 
-            key="sb_tone"
+            key=f"sb_tone_{lang}"
         )
         
         # --- PUNTI DI FORZA ---

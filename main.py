@@ -134,37 +134,56 @@ else:
     
     col1, col2 = st.columns(2)
     with col1:
-        rev_text = st.text_area(t("txt_rec"), height=180, placeholder="Incolla qui la recensione...")
+        # Placeholder tradotto per la recensione
+        rev_text = st.text_area(
+            t("txt_rec"), 
+            height=180, 
+            placeholder=t("ph_review") # <--- Tradotto
+        )
     with col2:
-        ctx_text = st.text_area(t("extra_ctx"), height=180, placeholder="Esempio: Offri uno sconto del 10%...")
+        # Placeholder tradotto per il contesto
+        ctx_text = st.text_area(
+            t("extra_ctx"), 
+            height=180, 
+            placeholder=t("ph_context") # <--- Tradotto
+        )
 
     if st.button(t("btn_gen"), use_container_width=True):
         if rev_text:
             with st.spinner(t("loading_msg") if "loading_msg" in translations.TRANSLATIONS else "Generazione in corso..."):
-                # Recupero dati dai widget della sidebar
-                # Usiamo chiavi dinamiche basate sulla lingua se hai applicato il fix della key
+                # 1. Recupero dati dai widget della sidebar
                 lang = st.session_state.current_lang_code
+                
+                # Cerchiamo prima la chiave specifica per lingua, altrimenti quella generica
                 b_name = st.session_state.get("sb_name", "Business")
-                b_cat = st.session_state.get(f"sb_cat", "General")
+                b_cat = st.session_state.get("sb_cat", "General")
+                
+                # Questo deve corrispondere a quello che abbiamo scritto in sidebar.py
                 b_tone = st.session_state.get(f"sb_tone_{lang}", st.session_state.get("sb_tone", "Professional"))
                 
-                # Generazione
+                # 2. Generazione effettiva
                 varianti = genera_risposte_ai(rev_text, ctx_text, b_tone, b_name, b_cat)
                 
-                # Salva la prima variante nel database come default
-                auth.save_review(st.session_state.username, b_cat, b_name, rev_text, varianti[0])
-                
-                st.success(t("success_msg"))
-                
-                # Visualizzazione delle 3 varianti in colonne
-                v_cols = st.columns(3)
-                for i, v in enumerate(varianti):
-                    with v_cols[i]:
-                        st.markdown(f"#### Variante {i+1}")
-                        st.info(v)
-                        if st.button(f"Copia Opzione {i+1}", key=f"copy_{i}"):
-                            st.code(v) # Comodo per copiare il testo con un click
+                if varianti and len(varianti) > 0:
+                    # 3. Salva la prima variante nel database
+                    auth.save_review(st.session_state.username, b_cat, b_name, rev_text, varianti[0])
+                    
+                    st.success(t("success_msg"))
+                    
+                    # 4. Visualizzazione delle 3 varianti in colonne
+                    v_cols = st.columns(3)
+                    for i, v in enumerate(varianti):
+                        if i < 3: # Sicurezza per non superare le 3 colonne
+                            with v_cols[i]:
+                                st.markdown(f"#### Variante {i+1}")
+                                st.info(v)
+                                # Tasto copia tradotto (usa btn_copy da translations)
+                                if st.button(f"{t('btn_copy')} {i+1}", key=f"copy_{i}"):
+                                    st.code(v) 
+                else:
+                    st.error("Errore durante la generazione. Riprova.")
         else:
-            st.warning("Per favore, inserisci il testo di una recensione.")
+            # Messaggio di avviso se manca il testo (tradotto se possibile)
+            st.warning(t("txt_rec"))
             
     st.markdown('</div>', unsafe_allow_html=True)
