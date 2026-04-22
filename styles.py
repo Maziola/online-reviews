@@ -31,13 +31,13 @@ def get_logo_html(size=100):
 def apply_custom_styles():
     st.markdown("""
     <style>
-        /* 1. PROTEZIONE IP: RIMOZIONE TOTALE HEADER E MENU */
+        /* 1. PROTEZIONE IP E RIMOZIONE HEADER */
         header[data-testid="stHeader"], #MainMenu, .stAppDeployButton, footer {
             display: none !important;
             visibility: hidden !important;
         }
 
-        /* 2. SIDEBAR FISSA E RIMOZIONE FRECCE/CURSORE */
+        /* 2. SIDEBAR FISSA E RIMOZIONE ICONE INTERNE */
         [data-testid="stSidebar"] {
             min-width: 350px !important;
             max-width: 350px !important;
@@ -61,17 +61,15 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            4. COLORI SIDEBAR (SOLO BIANCO)
+            4. COLORI BLOCCO SIDEBAR (RESTANO BIANCHI)
         ========================================================= */
-        /* Questo blocco agisce SOLO sui testi dentro il contenitore Sidebar */
         [data-testid="stSidebarContent"] * {
             color: #FFFFFF !important;
         }
         
-        /* Forza il bianco per Profilo attività, Ultime analisi, caption ecc. */
         [data-testid="stSidebar"] label p, 
         [data-testid="stSidebar"] .stMarkdown p,
-        [data-testid="stSidebar"] h3,
+        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3,
         [data-testid="stSidebar"] .stCaption,
         [data-testid="stSidebar"] span {
             color: #FFFFFF !important;
@@ -79,26 +77,21 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            5. COLORI AREA PRINCIPALE (MAIN) - VERDE RICHIESTO
+            5. COLORI BLOCCO MAIN (DIVENTANO VERDI)
         ========================================================= */
         .stApp {
             background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
         }
 
-        /* Selettore mirato per i titoli e le label nel corpo centrale (MAIN) */
-        /* Imposta il VERDE per Pannello amministratore, Generatore di risposte, ecc. */
-        .main div[data-testid="stVerticalBlock"] > div:has(h1, h2, h3, label) * {
-            color: #28a745 !important;
-        }
-        
-        /* Assicura che le label degli input nel main siano verdi */
-        .main label p, .main h1, .main h2, .main h3 {
-            color: #28a745 !important;
+        /* Selettore mirato esclusivamente all'area centrale MAIN */
+        .main h1, .main h2, .main h3, .main h4, .main h5,
+        .main label p, .main .stMarkdown p, .main span {
+            color: #28a745 !important; /* VERDE */
             font-weight: bold !important;
         }
 
         /* =========================================================
-            6. WIDGET (INPUT BIANCHI / TESTO NERO)
+            6. WIDGET E PULSANTI (INVARIATI)
         ========================================================= */
         div[data-baseweb="base-input"] input, 
         div[data-baseweb="base-input"] textarea,
@@ -110,7 +103,6 @@ def apply_custom_styles():
             border-radius: 12px !important;
         }
 
-        /* 7. PULSANTI (VERDE PETROLIO) */
         div.stButton > button, div.stFormSubmitButton > button {
             background-color: #367588 !important;
             color: #FFFFFF !important;
@@ -121,12 +113,17 @@ def apply_custom_styles():
             width: 100%;
         }
 
-        /* 8. CARD E NOTIFICHE */
         .main-card {
             background-color: #FFFFFF !important;
             border-radius: 20px !important;
             padding: 40px !important;
             box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
+        }
+
+        [data-testid="stNotification"] {
+            background-color: #fff9c4 !important;
+            color: #5d4037 !important;
+            border-radius: 10px !important;
         }
     </style>
     """, unsafe_allow_html=True)
