@@ -21,7 +21,6 @@ def get_logo_html(size=100):
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as f:
             data = base64.b64encode(f.read()).decode("utf-8")
-        # Ho aggiunto margin-bottom negativo per "tirare su" il contenuto ed eliminare il vuoto
         return f'''
             <div style="display: flex; justify-content: center; align-items: center; padding-bottom: 0px; margin-bottom: -30px;">
                 <img src="data:image/png;base64,{data}" style="width: {size*5}px; height: auto; object-fit: contain;">
@@ -30,39 +29,46 @@ def get_logo_html(size=100):
     return "<div style='height:0px;'></div>"
 
 def apply_custom_styles():
-    # Recuperiamo l'utente corrente dallo stato della sessione per la gestione del menu
-    is_admin = st.session_state.get("username", "").lower() == "admin"
-    
-    # CSS dinamico per nascondere gli elementi di sistema solo ai non-admin
-    hide_menu_style = ""
-    if not is_admin:
-        hide_menu_style = """
-        #MainMenu {visibility: hidden;}
-        header {visibility: hidden;}
-        footer {visibility: hidden;}
-        .stAppDeployButton {display:none;}
-        [data-testid="stStatusWidget"] {visibility: hidden;}
-        """
-
-    st.markdown(f"""
+    # CSS Ultra-aggressivo per nascondere header, menu, pulsanti deploy e GitHub
+    # Rimosso is_admin per protezione totale dell'IP
+    st.markdown("""
     <style>
         /* =========================================================
-           PATCH: NASCONDI MENU DI SISTEMA (SOLO NON-ADMIN)
+           PROTEZIONE IP: RIMOZIONE TOTALE HEADER E MENU
         ========================================================= */
-        {hide_menu_style}
+        header[data-testid="stHeader"] {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0px !important;
+        }
+        
+        #MainMenu {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        
+        .stAppDeployButton {
+            display: none !important;
+            visibility: hidden !important;
+        }
+        
+        footer {
+            display: none !important;
+            visibility: hidden !important;
+        }
 
         /* =========================================================
             PATCH: ELIMINAZIONE SPAZIO BIANCO INIZIALE E SOTTO LOGO
         ========================================================= */
-        .block-container {{
-            padding-top: 1rem !important;
+        .block-container {
+            padding-top: 0rem !important;
             padding-bottom: 0rem !important;
-        }}
+        }
         
         /* Rimuove lo spazio vuoto tra i blocchi (es. sotto il logo) */
-        [data-testid="stVerticalBlock"] > div:has(div[class*="stMarkdown"]) {{
+        [data-testid="stVerticalBlock"] > div:has(div[class*="stMarkdown"]) {
             gap: 0rem !important;
-        }}
+        }
 
         /* =========================================================
             PATCH: ELIMINAZIONE SCRITTE SOVRAPPOSTE
@@ -70,33 +76,33 @@ def apply_custom_styles():
         div[data-baseweb="select"] ~ span > div:last-child,
         div[data-baseweb="select"] + div svg,
         div[data-testid="stSelectbox"] div[role="button"] > div:last-child,
-        div[data-testid="stExpander"] svg {{
+        div[data-testid="stExpander"] svg {
             display: none !important;
             visibility: hidden !important;
-        }}
+        }
 
         /* =========================================================
             1. SFONDO GENERALE APP
         ========================================================= */
-        .stApp {{
+        .stApp {
             background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
-        }}
+        }
 
         /* =========================================================
             2. SIDEBAR (SINISTRA) - FORZA TESTO BIANCO
         ========================================================= */
-        [data-testid="stSidebar"], [data-testid="stSidebarContent"] {{
+        [data-testid="stSidebar"], [data-testid="stSidebarContent"] {
             background-color: #4a5568 !important;
             background-image: none !important;
-        }}
+        }
 
         [data-testid="stSidebar"] div[data-testid="stWidgetLabel"] p,
         [data-testid="stSidebar"] label p,
-        [data-testid="stSidebar"] label {{
+        [data-testid="stSidebar"] label {
             color: #FFFFFF !important;
             font-weight: 700 !important;
             opacity: 1 !important;
-        }}
+        }
 
         [data-testid="stSidebar"] .stMarkdown p, 
         [data-testid="stSidebar"] span, 
@@ -106,10 +112,10 @@ def apply_custom_styles():
         [data-testid="stSidebar"] h2, 
         [data-testid="stSidebar"] h3,
         [data-testid="stSidebar"] h4, 
-        [data-testid="stSidebar"] h5 {{
+        [data-testid="stSidebar"] h5 {
             color: #FFFFFF !important;
             font-weight: 600 !important;
-        }}
+        }
 
         /* =========================================================
             3. AREA DESTRA E LOGIN - TUTTO VERDE PETROLIO
@@ -118,17 +124,17 @@ def apply_custom_styles():
         label p,
         button[data-baseweb="tab"] p,
         .stApp .stMarkdown p,
-        .stApp span {{
+        .stApp span {
             color: #367588 !important;
             font-weight: bold !important;
-        }}
+        }
 
         [data-testid="stSidebar"] label p,
         [data-testid="stSidebar"] h3,
         [data-testid="stSidebar"] p,
-        [data-testid="stSidebar"] .stMarkdown p {{
+        [data-testid="stSidebar"] .stMarkdown p {
             color: #FFFFFF !important;
-        }}
+        }
 
         /* =========================================================
             4. INPUT, TEXTAREA E SELECTBOX - SFONDO BIANCO E TESTO NERO
@@ -137,67 +143,67 @@ def apply_custom_styles():
         div[data-baseweb="base-input"] textarea,
         div[data-baseweb="select"] > div, 
         .stTextInput input,
-        .stTextArea textarea {{
+        .stTextArea textarea {
             background-color: #FFFFFF !important;
             color: #000000 !important;
             -webkit-text-fill-color: #000000 !important;
             caret-color: #000000 !important;
             border-radius: 12px !important;
             border: 1px solid #CBD5E1 !important;
-        }}
+        }
 
-        div[data-testid="stSelectbox"] p, div[data-testid="stSelectbox"] div {{
+        div[data-testid="stSelectbox"] p, div[data-testid="stSelectbox"] div {
             color: #000000 !important;
-        }}
+        }
 
         /* =========================================================
             5. CARD BIANCA (Dashboard)
         ========================================================= */
-        .main-card {{
+        .main-card {
             background-color: #FFFFFF !important;
             border-radius: 20px !important;
             box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
             padding: 40px !important;
-        }}
+        }
         
-        .main-card .stMarkdown p {{
+        .main-card .stMarkdown p {
             color: #000000 !important;
-        }}
+        }
 
         /* =========================================================
             6. PULSANTI
         ========================================================= */
         div.stButton > button, 
-        div.stFormSubmitButton > button {{
+        div.stFormSubmitButton > button {
             background-color: #367588 !important;
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
             border-radius: 10px !important;
             font-weight: 700 !important;
             border: none !important;
-        }}
+        }
 
-        div.stButton > button:hover {{
+        div.stButton > button:hover {
             background-color: #2a5d6d !important;
-        }}
+        }
 
         /* =========================================================
             7. FIX NOTIFICHE (GIALLO CHIARO) E VARIANTI
         ========================================================= */
-        [data-testid="stNotification"] {{
+        [data-testid="stNotification"] {
             background-color: #fff9c4 !important;
             color: #5d4037 !important;
             border: 1px solid #fff176 !important;
             border-radius: 10px !important;
-        }}
+        }
         
-        [data-testid="stNotification"] p {{
+        [data-testid="stNotification"] p {
             color: #5d4037 !important;
             font-weight: 600 !important;
-        }}
+        }
 
-        .variant-card p {{
+        .variant-card p {
             color: #367588 !important;
-        }}
+        }
     </style>
     """, unsafe_allow_html=True)
