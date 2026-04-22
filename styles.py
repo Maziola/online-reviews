@@ -7,6 +7,8 @@ def apply_custom_font(font_name="Ubuntu"):
     st.markdown(f"""
         <style>
             @import url('https://fonts.googleapis.com/css2?family={font_url}:wght@300;400;700;800&display=swap');
+            
+            /* Font globale */
             html, body, [class*="css"], .stMarkdown, p, div, span, h1, h2, h3, h4, h5 {{
                 font-family: '{font_name}', sans-serif !important;
             }}
@@ -32,13 +34,16 @@ def apply_custom_styles():
         /* 1. PROTEZIONE IP E RIMOZIONE HEADER */
         header[data-testid="stHeader"], #MainMenu, .stAppDeployButton, footer {
             display: none !important;
+            visibility: hidden !important;
         }
 
-        /* 2. SIDEBAR FISSA E LARGHEZZA */
+        /* 2. SIDEBAR FISSA E RIMOZIONE ICONE */
         [data-testid="stSidebar"] {
             min-width: 350px !important;
             max-width: 350px !important;
             width: 350px !important;
+            transform: none !important;
+            transition: none !important;
             background-color: #4a5568 !important;
         }
         
@@ -56,54 +61,59 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            4. COLORI SIDEBAR (FORZATURA BIANCO)
+            4. COLORI BLOCCO SIDEBAR (TUTTO BIANCO)
         ========================================================= */
-        /* Colpisce tutto ciò che è dentro la Sidebar */
-        [data-testid="stSidebar"] * {
+        /* Colpisce ogni elemento dentro la sidebar e lo forza al bianco */
+        [data-testid="stSidebarContent"] * {
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
         }
 
         /* =========================================================
-            5. COLORI BLOCCO MAIN (FORZATURA VERDE)
+            5. COLORI BLOCCO MAIN (TUTTO VERDE)
         ========================================================= */
         .stApp {
             background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
         }
 
-        /* Questa regola sovrascrive le variabili interne di Streamlit solo nel Main */
-        .main {
-            --text-color: #28a745 !important;
-            --header-color: #28a745 !important;
-        }
-
-        /* Colpiamo ogni tag testuale dentro l'area main */
-        .main p, .main span, .main label, .main h1, .main h2, .main h3, .main div {
+        /* FORZATURA TOTALE: Ogni testo (*) dentro la classe .main diventa VERDE */
+        .main * {
             color: #28a745 !important;
             -webkit-text-fill-color: #28a745 !important;
         }
 
-        /* =========================================================
-            6. RIPRISTINO COLORI INPUT E BOTTONI (DA NON RENDERE VERDI)
-        ========================================================= */
-        /* Testo dentro i campi di input (deve restare Nero) */
-        .main input, .main textarea, .main [data-baseweb="select"] div {
-            color: #000000 !important;
-            -webkit-text-fill-color: #000000 !important;
-        }
-
-        /* Testo dentro i pulsanti (deve restare Bianco) */
-        .main button p, .main button span, .main button div {
+        /* Eccezione: manteniamo il testo dei pulsanti nel main bianco se necessario */
+        .main .stButton button * {
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
         }
 
-        div.stButton > button, div.stFormSubmitButton > button {
-            background-color: #367588 !important;
-            border-radius: 10px !important;
-            border: none !important;
+        /* =========================================================
+            6. WIDGET (INPUT BIANCHI / TESTO NERO)
+        ========================================================= */
+        /* Qui forziamo il nero perché il selettore .main * di sopra li renderebbe verdi */
+        div[data-baseweb="base-input"] input, 
+        div[data-baseweb="base-input"] textarea,
+        div[data-baseweb="select"] > div,
+        .stTextInput input, .stTextArea textarea {
+            background-color: #FFFFFF !important;
+            color: #000000 !important;
+            -webkit-text-fill-color: #000000 !important;
+            border-radius: 12px !important;
         }
 
+        /* 7. PULSANTI (VERDE PETROLIO) */
+        div.stButton > button, div.stFormSubmitButton > button {
+            background-color: #367588 !important;
+            color: #FFFFFF !important;
+            -webkit-text-fill-color: #FFFFFF !important;
+            border-radius: 10px !important;
+            font-weight: 700 !important;
+            border: none !important;
+            width: 100%;
+        }
+
+        /* 8. CARD */
         .main-card {
             background-color: #FFFFFF !important;
             border-radius: 20px !important;
