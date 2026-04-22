@@ -77,16 +77,20 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            5. COLORI BLOCCO MAIN (DIVENTANO VERDI)
+            5. COLORI BLOCCO MAIN (FORZATURA VERDE)
         ========================================================= */
         .stApp {
             background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
         }
 
-        /* Selettore mirato esclusivamente all'area centrale MAIN */
-        .main h1, .main h2, .main h3, .main h4, .main h5,
-        .main label p, .main .stMarkdown p, .main span {
-            color: #28a745 !important; /* VERDE */
+        /* Selettore ultra-specifico per forzare il VERDE su testi e label nel Main */
+        .main [data-testid="stMarkdownContainer"] p, 
+        .main [data-testid="stWidgetLabel"] p,
+        .main label, 
+        .main span,
+        .main h1, .main h2, .main h3 {
+            color: #28a745 !important;
+            -webkit-text-fill-color: #28a745 !important;
             font-weight: bold !important;
         }
 
@@ -118,12 +122,6 @@ def apply_custom_styles():
             border-radius: 20px !important;
             padding: 40px !important;
             box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
-        }
-
-        [data-testid="stNotification"] {
-            background-color: #fff9c4 !important;
-            color: #5d4037 !important;
-            border-radius: 10px !important;
         }
     </style>
     """, unsafe_allow_html=True)
