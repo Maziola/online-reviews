@@ -32,23 +32,32 @@ if "history_item" not in st.session_state:
     st.session_state.history_item = None
 
 # Funzione per generare le risposte
-def genera_risposte_ai(prompt):
-    risposte = []
-    # Usiamo un ciclo for per assicurarci di fare 3 tentativi distinti
+def genera_risposte_ai(review_text, extra_context, tone, biz_name, category):
+    varianti = []
+    
+    # Prompt strutturato usando tutti i dati della sidebar
+    prompt_base = f"""
+    Sei un esperto di customer care per un'attività di tipo {category} chiamata {biz_name}.
+    Rispondi a questa recensione: "{review_text}"
+    Tono della risposta: {tone}.
+    Contesto aggiuntivo: {extra_context}.
+    """
+
     for i in range(3):
         try:
-            # Aggiungiamo una piccola variazione al prompt per ogni ciclo
-            # per forzare l'AI a non scopiazzare se stessa
             response = client.chat.completions.create(
-                model="gpt-4o", # o "gpt-3.5-turbo"
-                messages=[{"role": "user", "content": f"{prompt} - Variante {i+1}"}],
-                temperature=0.7 # Temperatura alta = più creatività tra le varianti
+                model="gpt-4o",
+                messages=[
+                    {"role": "system", "content": "Sei un assistente professionale."},
+                    {"role": "user", "content": f"{prompt_base}\nGenera la variante numero {i+1} diversa dalle precedenti."}
+                ],
+                temperature=0.7
             )
-            risposte.append(response.choices[0].message.content)
+            varianti.append(response.choices[0].message.content)
         except Exception as e:
-            risposte.append(f"Errore nella generazione della variante {i+1}: {e}")
-    
-    return risposte
+            varianti.append(f"Errore variante {i+1}: {str(e)}")
+            
+    return varianti
 
 # --- LOGICA DI ACCESSO ---
 if not st.session_state.auth:
