@@ -89,8 +89,20 @@ TRANSLATIONS = {
     # AUTH & LOGIN
     "login_tab": {"it": "🔑 ACCESSO", "en": "🔑 LOGIN", "fr": "🔑 CONNEXION", "de": "🔑 ANMELDEN", "es": "🔑 ACCESO"},
     "reg_tab": {"it": "📝 REGISTRAZIONE", "en": "📝 REGISTER", "fr": "📝 INSCRIPTION", "de": "📝 REGISTRIEREN", "es": "📝 REGISTRO"},
-    "user_label": {"it": "Username", "en": "Username", "fr": "Nom d'utilisateur", "de": "Benutzername", "es": "Usuario"},
-    "pass_label": {"it": "Password", "en": "Password", "fr": "Mot de passe", "de": "Passwort", "es": "Contraseña"},
+    "user_label": {
+        "it": "Nome utente", 
+        "en": "Username", 
+        "fr": "Nom d'utilisateur", 
+        "de": "Benutzername", 
+        "es": "Nombre de usuario"
+    },
+    "pass_label": {
+        "it": "Password", 
+        "en": "Password", 
+        "fr": "Mot de passe", 
+        "de": "Passwort", 
+        "es": "Contraseña"
+    },
     "btn_login": {"it": "ACCEDI AL PORTALE", "en": "LOGIN TO PORTAL", "fr": "ACCÉDER AU PORTAIL", "de": "ZUM PORTAL ANMELDEN", "es": "ACCEDER AL PORTAL"},
     "btn_reg": {"it": "REGISTRA", "en": "REGISTER", "fr": "S'INSCRIRE", "de": "REGISTRIEREN", "es": "REGISTRARSE"},
     "auth_error": {"it": "Credenziali errate o Trial scaduto.", "en": "Invalid credentials or Trial expired.", "fr": "Identifiants invalides ou essai expiré.", "de": "Ungültige Anmeldedaten oder Testversion abgelaufen.", "es": "Credenciales inválidas o prueba expirada."}
