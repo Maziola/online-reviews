@@ -31,92 +31,70 @@ def get_logo_html(size=100):
 def apply_custom_styles():
     st.markdown("""
     <style>
-        /* =========================================================
-            1. PROTEZIONE IP: RIMOZIONE TOTALE HEADER E MENU
-        ========================================================= */
-        header[data-testid="stHeader"] {
+        /* 1. PROTEZIONE IP: RIMOZIONE TOTALE HEADER E MENU */
+        header[data-testid="stHeader"], #MainMenu, .stAppDeployButton, footer {
             display: none !important;
             visibility: hidden !important;
         }
-        
-        #MainMenu { display: none !important; }
-        .stAppDeployButton { display: none !important; }
-        footer { display: none !important; }
 
-        /* =========================================================
-            2. SOLUZIONE SIDEBAR TAGLIATA E FISSA
-        ========================================================= */
+        /* 2. SIDEBAR FISSA E RIMOZIONE FRECCE/CURSORE */
         [data-testid="stSidebar"] {
             min-width: 350px !important;
             max-width: 350px !important;
             width: 350px !important;
             transform: none !important;
             transition: none !important;
+            background-color: #4a5568 !important;
         }
         
-        [data-testid="stSidebarContent"] {
-            width: 350px !important;
-            visibility: visible !important;
-        }
-
-        [data-testid="sidebar-close-button"], button[kind="headerNoPadding"] {
+        [data-testid="stSidebarResizer"], [data-testid="sidebar-close-button"], 
+        button[kind="headerNoPadding"], [data-testid="stSidebar"] svg {
             display: none !important;
         }
 
-        /* =========================================================
-            3. RIMOZIONE BUG ICONE BLUASTRE
-        ========================================================= */
-        div[data-testid="stExpander"] svg + div,
-        div[data-testid="stSelectbox"] svg + div,
-        *:contains("keyboard_double"),
-        *:contains("arrow_right") {
+        /* 3. RIMOZIONE BUG ICONE BLUASTRE */
+        div[data-testid="stExpander"] svg + div, div[data-testid="stSelectbox"] svg + div,
+        *:contains("keyboard_double"), *:contains("arrow_right") {
             display: none !important;
             font-size: 0px !important;
             color: transparent !important;
         }
 
         /* =========================================================
-            4. DESIGN SIDEBAR: TUTTO BIANCO (RIPRISTINATO)
+            4. COLORI SIDEBAR (SOLO BIANCO)
         ========================================================= */
-        [data-testid="stSidebar"], [data-testid="stSidebarContent"] {
-            background-color: #4a5568 !important;
+        /* Questo blocco agisce SOLO sui testi dentro il contenitore Sidebar */
+        [data-testid="stSidebarContent"] * {
+            color: #FFFFFF !important;
         }
-
-        /* Forza il bianco per ogni elemento testuale nella sidebar */
-        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, 
-        [data-testid="stSidebar"] h3, [data-testid="stSidebar"] h4, 
-        [data-testid="stSidebar"] h5, [data-testid="stSidebar"] p,
-        [data-testid="stSidebar"] label, [data-testid="stSidebar"] span,
-        [data-testid="stSidebar"] .stMarkdown p, [data-testid="stSidebar"] .stCaption {
+        
+        /* Forza il bianco per Profilo attività, Ultime analisi, caption ecc. */
+        [data-testid="stSidebar"] label p, 
+        [data-testid="stSidebar"] .stMarkdown p,
+        [data-testid="stSidebar"] h3,
+        [data-testid="stSidebar"] .stCaption,
+        [data-testid="stSidebar"] span {
             color: #FFFFFF !important;
             font-weight: 700 !important;
-            opacity: 1 !important;
         }
 
         /* =========================================================
-            5. AREA PRINCIPALE: CAMBIO COLORI SPECIFICI (VERDE)
+            5. COLORI AREA PRINCIPALE (MAIN) - VERDE RICHIESTO
         ========================================================= */
         .stApp {
             background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
         }
 
-        /* Colore base verde petrolio per titoli generici area principale */
-        .main h1, .main h2, .main h3, .main h4, .main h5, 
-        .main label p, .main .stMarkdown p, .main span {
-            color: #367588 !important;
-            font-weight: bold !important;
-        }
-
-        /* APPLICAZIONE MIRATA DEL VERDE SOLO ALL'AREA PRINCIPALE (MAIN) */
-        .main p:contains("Pannello amministratore"),
-        .main p:contains("Gestione attività"),
-        .main p:contains("Generatore di risposte"),
-        .main p:contains("Testo della recensione"),
-        .main p:contains("Contesto extra/note specifiche"),
-        .main h1:contains("Pannello"), .main h1:contains("Generatore"),
-        .main h2:contains("Pannello"), .main h2:contains("Generatore"),
-        .main h3:contains("Pannello"), .main h3:contains("Generatore") {
+        /* Selettore mirato per i titoli e le label nel corpo centrale (MAIN) */
+        /* Imposta il VERDE per Pannello amministratore, Generatore di risposte, ecc. */
+        .main div[data-testid="stVerticalBlock"] > div:has(h1, h2, h3, label) * {
             color: #28a745 !important;
+        }
+        
+        /* Assicura che le label degli input nel main siano verdi */
+        .main label p, .main h1, .main h2, .main h3 {
+            color: #28a745 !important;
+            font-weight: bold !important;
         }
 
         /* =========================================================
@@ -132,9 +110,7 @@ def apply_custom_styles():
             border-radius: 12px !important;
         }
 
-        /* =========================================================
-            7. PULSANTI E CARD (INVARIATI)
-        ========================================================= */
+        /* 7. PULSANTI (VERDE PETROLIO) */
         div.stButton > button, div.stFormSubmitButton > button {
             background-color: #367588 !important;
             color: #FFFFFF !important;
@@ -145,17 +121,12 @@ def apply_custom_styles():
             width: 100%;
         }
 
+        /* 8. CARD E NOTIFICHE */
         .main-card {
             background-color: #FFFFFF !important;
             border-radius: 20px !important;
             padding: 40px !important;
             box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
-        }
-
-        [data-testid="stNotification"] {
-            background-color: #fff9c4 !important;
-            color: #5d4037 !important;
-            border-radius: 10px !important;
         }
     </style>
     """, unsafe_allow_html=True)
