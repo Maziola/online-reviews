@@ -31,51 +31,72 @@ def get_logo_html(size=100):
 def apply_custom_styles():
     st.markdown("""
     <style>
-        /* 1. PROTEZIONE IP: RIMOZIONE TOTALE HEADER E MENU */
-        header[data-testid="stHeader"], #MainMenu, .stAppDeployButton, footer {
+        /* =========================================================
+            1. PROTEZIONE IP: RIMOZIONE TOTALE HEADER E MENU
+        ========================================================= */
+        header[data-testid="stHeader"] {
             display: none !important;
             visibility: hidden !important;
         }
+        
+        #MainMenu { display: none !important; }
+        .stAppDeployButton { display: none !important; }
+        footer { display: none !important; }
 
-        /* 2. SIDEBAR FISSA (FIX TAGLIO LATERALE) */
+        /* =========================================================
+            2. SOLUZIONE SIDEBAR TAGLIATA (FORZATURA LAYOUT)
+        ========================================================= */
+        /* Questo blocco impedisce alla pagina di "schiacciare" la sidebar */
         [data-testid="stSidebar"] {
-            display: flex !important;
-            visibility: visible !important;
             min-width: 350px !important;
             max-width: 350px !important;
-            z-index: 999999 !important;
+            width: 350px !important;
+            transform: none !important;
+            transition: none !important;
+        }
+        
+        /* Forza il contenitore principale a rispettare lo spazio della sidebar */
+        [data-testid="stSidebarContent"] {
+            width: 350px !important;
+            visibility: visible !important;
         }
 
-        /* Rimuove i pulsanti di chiusura/apertura */
+        /* Nasconde i tasti di chiusura */
         [data-testid="sidebar-close-button"], button[kind="headerNoPadding"] {
             display: none !important;
         }
 
-        /* 3. RIMOZIONE TESTI SOVRAPPOSTI (FIX ICONE BLUASTRE) */
-        [data-testid="stExpander"] svg + div,
-        [data-testid="stSelectbox"] svg + div,
-        div:contains("keyboard_double"),
-        div:contains("arrow_right"),
-        span:contains("keyboard_double"),
-        span:contains("arrow_right") {
+        /* =========================================================
+            3. RIMOZIONE BUG ICONE BLUASTRE (SOLUZIONE MIRATA)
+        ========================================================= */
+        /* Nasconde i testi residui senza rompere i widget */
+        div[data-testid="stExpander"] svg + div,
+        div[data-testid="stSelectbox"] svg + div,
+        *:contains("keyboard_double"),
+        *:contains("arrow_right") {
             display: none !important;
             font-size: 0px !important;
             color: transparent !important;
         }
 
-        /* 4. DESIGN SIDEBAR (TESTO BIANCO) */
+        /* =========================================================
+            4. DESIGN SIDEBAR (FONDO E TESTO BIANCO)
+        ========================================================= */
         [data-testid="stSidebar"], [data-testid="stSidebarContent"] {
             background-color: #4a5568 !important;
-            background-image: none !important;
         }
 
-        [data-testid="stSidebar"] label p, [data-testid="stSidebar"] .stMarkdown p, 
-        [data-testid="stSidebar"] h3, [data-testid="stSidebar"] span {
+        [data-testid="stSidebar"] label p, 
+        [data-testid="stSidebar"] .stMarkdown p,
+        [data-testid="stSidebar"] h3,
+        [data-testid="stSidebar"] span {
             color: #FFFFFF !important;
-            font-weight: 600 !important;
+            font-weight: 700 !important;
         }
 
-        /* 5. DESIGN AREA PRINCIPALE E SFONDO */
+        /* =========================================================
+            5. AREA PRINCIPALE E SFONDO GRADIENTE
+        ========================================================= */
         .stApp {
             background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
         }
@@ -85,28 +106,30 @@ def apply_custom_styles():
             font-weight: bold !important;
         }
 
-        /* 6. INPUT E SELECTBOX (SFONDO BIANCO / TESTO NERO) */
-        div[data-baseweb="base-input"] input, div[data-baseweb="base-input"] textarea,
-        div[data-baseweb="select"] > div, .stTextInput input, .stTextArea textarea {
+        /* =========================================================
+            6. WIDGET (INPUT BIANCHI / TESTO NERO)
+        ========================================================= */
+        div[data-baseweb="base-input"] input, 
+        div[data-baseweb="base-input"] textarea,
+        div[data-baseweb="select"] > div,
+        .stTextInput input, .stTextArea textarea {
             background-color: #FFFFFF !important;
             color: #000000 !important;
             -webkit-text-fill-color: #000000 !important;
             border-radius: 12px !important;
-            border: 1px solid #CBD5E1 !important;
         }
 
-        div[data-testid="stSelectbox"] p, div[data-testid="stSelectbox"] div {
-            color: #000000 !important;
-        }
-
-        /* 7. PULSANTI (RIPRISTINO TESTO BIANCO FORZATO) */
+        /* =========================================================
+            7. PULSANTI (ACCESSO, REGISTRAZIONE E ALTRI)
+        ========================================================= */
         div.stButton > button, div.stFormSubmitButton > button {
-            background-color: #367588 !important;
+            background-color: #367588 !important; /* VERDE PETROLIO ORIGINALE */
             color: #FFFFFF !important;
-            -webkit-text-fill-color: #FFFFFF !important; /* Forza il bianco su Chrome/Safari */
+            -webkit-text-fill-color: #FFFFFF !important;
             border-radius: 10px !important;
             font-weight: 700 !important;
             border: none !important;
+            width: 100%;
         }
 
         div.stButton > button:hover {
@@ -115,23 +138,20 @@ def apply_custom_styles():
             -webkit-text-fill-color: #FFFFFF !important;
         }
 
-        /* 8. CARD E NOTIFICHE */
+        /* =========================================================
+            8. CARD E NOTIFICHE
+        ========================================================= */
         .main-card {
             background-color: #FFFFFF !important;
             border-radius: 20px !important;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
             padding: 40px !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
         }
 
         [data-testid="stNotification"] {
             background-color: #fff9c4 !important;
             color: #5d4037 !important;
-            border: 1px solid #fff176 !important;
             border-radius: 10px !important;
-        }
-        
-        [data-testid="stNotification"] p {
-            color: #5d4037 !important;
         }
     </style>
     """, unsafe_allow_html=True)
