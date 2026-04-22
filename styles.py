@@ -2,6 +2,9 @@ import streamlit as st
 import base64
 import os
 
+# CONFIGURAZIONE PAGINA: Forza lo stato della sidebar su 'expanded' (sempre aperta)
+st.set_page_config(initial_sidebar_state="expanded")
+
 def apply_custom_font(font_name="Ubuntu"):
     font_url = font_name.replace(" ", "+")
     st.markdown(f"""
@@ -21,7 +24,6 @@ def get_logo_html(size=100):
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as f:
             data = base64.b64encode(f.read()).decode("utf-8")
-        # MODIFICA: Eliminato margin-bottom negativo per evitare sovrapposizioni
         return f'''
             <div style="display: flex; justify-content: center; align-items: center; padding-bottom: 10px; margin-bottom: 10px;">
                 <img src="data:image/png;base64,{data}" style="width: {size*5}px; height: auto; object-fit: contain;">
@@ -58,36 +60,33 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            FIX EMERGENZA: RIPRISTINO TRIGGER SIDEBAR
+            SIDEBAR FISSA E RIMOZIONE PULSANTE CHIUSURA
         ========================================================= */
-        /* Questo assicura che il pulsante per riaprire la sidebar sia cliccabile */
-        button[kind="headerNoPadding"] {
-            display: flex !important;
-            visibility: visible !important;
-            opacity: 1 !important;
-            background-color: #367588 !important;
-            color: white !important;
-            z-index: 999999 !important;
+        /* Nasconde il pulsante "X" per chiudere la sidebar, rendendola di fatto fissa */
+        [data-testid="sidebar-close-button"] {
+            display: none !important;
+        }
+        
+        /* Assicura che la sidebar non possa essere collassata via CSS */
+        [data-testid="stSidebar"][aria-expanded="false"] {
+            margin-left: 0px !important;
         }
 
         /* =========================================================
             PATCH: FIX SPAZIATURA E SOVRAPPOSIZIONI
         ========================================================= */
-        /* MODIFICA: padding-top a 2rem per distanziare il logo dal bordo superiore */
         .block-container {
             padding-top: 2rem !important;
             padding-bottom: 0rem !important;
         }
         
-        /* MODIFICA: gap impostato a 1rem per evitare che le scritte si attacchino agli input */
         [data-testid="stVerticalBlock"] > div:has(div[class*="stMarkdown"]) {
             gap: 1rem !important;
         }
 
         /* =========================================================
-            PATCH: ELIMINAZIONE SCRITTE SOVRAPPOSTE (MODALITÀ INVISIBILE)
+            PATCH: ELIMINAZIONE SCRITTE SOVRAPPOSTE (SOLUZIONE RADICALE)
         ========================================================= */
-        /* 1. Rimozione standard icone */
         div[data-baseweb="select"] ~ span > div:last-child,
         div[data-baseweb="select"] + div svg,
         div[data-testid="stSelectbox"] div[role="button"] > div:last-child,
@@ -96,10 +95,9 @@ def apply_custom_styles():
             visibility: hidden !important;
         }
 
-        /* 2. Soluzione specifica per scritte residue (keyboard_double, arrow_right) */
-        /* Invece di rimuoverle, le rendiamo trasparenti e grandi 0px */
         div[data-testid="stExpander"] p:empty,
-        div[aria-expanded] > div > svg + div,
+        div[aria-expanded="true"] > div > svg + div,
+        div[aria-expanded="false"] > div > svg + div,
         *:contains("arrow_right"), 
         *:contains("keyboard_double") {
             color: transparent !important;
@@ -107,9 +105,9 @@ def apply_custom_styles():
             line-height: 0 !important;
             visibility: hidden !important;
             opacity: 0 !important;
-            text-indent: -9999px !important;
             user-select: none !important;
             pointer-events: none !important;
+            text-indent: -9999px !important;
         }
 
         /* =========================================================
