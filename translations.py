@@ -42,6 +42,22 @@ TRANSLATIONS = {
     "success_msg": {"it": "✅ Risposte generate e archiviate!", "en": "✅ Replies generated!", "fr": "✅ Réponses générées !", "de": "✅ Generiert!", "es": "✅ ¡Generadas!"},
     "btn_copy": {"it": "Copia Opzione", "en": "Copy Option", "fr": "Copier l'option", "de": "Option kopieren", "es": "Copiar opción"},
     
+    # LOADING & VARIANTS
+    "loading_msg": {
+        "it": "Generazione in corso...",
+        "en": "Generation in progress...",
+        "fr": "Génération en cours...",
+        "de": "Generierung läuft...",
+        "es": "Generación en curso..."
+    },
+    "variant_title": {
+        "it": "Variante",
+        "en": "Variant",
+        "fr": "Variante",
+        "de": "Variante",
+        "es": "Variante"
+    },
+
     # PLACEHOLDERS
     "ph_review": {
         "it": "Incolla qui la recensione...",
@@ -62,7 +78,7 @@ TRANSLATIONS = {
     "prof_biz": {"it": "Profilo Attività", "en": "Business Profile", "fr": "Profil Entreprise", "de": "Unternehmensprofil", "es": "Perfil de Empresa"},
     "biz_name": {"it": "Nome Business:", "en": "Business Name:", "fr": "Nom de l'entreprise :", "de": "Name des Unternehmens:", "es": "Nombre de la empresa:"},
     "cat_label": {"it": "Categoria", "en": "Category", "fr": "Catégorie", "de": "Kategorie", "es": "Categoría"},
-    "tone_label": {"it": "Tono della risposta", "en": "Response Tone", "fr": "Ton de la réponse", "de": "Antwortton", "es": "Tono de la respuesta"},
+    "tone_label": {"it": "Tono della risposta", "en": "Response Tone", "fr": "Ton de la réponse", "de": "Antwortton", "es": "Tono de la risposta"},
     "punti_forza": {"it": "Punti di forza", "en": "Strengths", "fr": "Points forts", "de": "Stärken", "es": "Puntos fuertes"},
     "policy_firma": {"it": "Policy e Firma", "en": "Policy & Signature", "fr": "Politique et Signature", "de": "Richtlinien & Signatur", "es": "Política y Firma"},
     "lang_app": {"it": "Lingua App", "en": "App Language", "fr": "Langue de l'App", "de": "App-Sprache", "es": "Idioma de la App"},
