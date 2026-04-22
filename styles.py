@@ -44,9 +44,9 @@ def apply_custom_styles():
         footer { display: none !important; }
 
         /* =========================================================
-            2. SOLUZIONE SIDEBAR TAGLIATA (FORZATURA LAYOUT)
+            2. SIDEBAR FISSA E RIMOZIONE FRECCE (CHEVRONS)
         ========================================================= */
-        /* Questo blocco impedisce alla pagina di "schiacciare" la sidebar */
+        /* Blocca la sidebar ed elimina le frecce di chiusura/spostamento */
         [data-testid="stSidebar"] {
             min-width: 350px !important;
             max-width: 350px !important;
@@ -55,21 +55,22 @@ def apply_custom_styles():
             transition: none !important;
         }
         
-        /* Forza il contenitore principale a rispettare lo spazio della sidebar */
+        /* RIMOZIONE DEFINITIVA DELLE FRECCE NERE (SIDEBAR CHEVRONS) */
+        [data-testid="sidebar-close-button"], 
+        button[kind="headerNoPadding"],
+        [data-testid="stSidebar"] svg {
+            display: none !important;
+        }
+
+        /* Forza la visibilità del contenuto interno */
         [data-testid="stSidebarContent"] {
             width: 350px !important;
             visibility: visible !important;
         }
 
-        /* Nasconde i tasti di chiusura */
-        [data-testid="sidebar-close-button"], button[kind="headerNoPadding"] {
-            display: none !important;
-        }
-
         /* =========================================================
-            3. RIMOZIONE BUG ICONE BLUASTRE (SOLUZIONE MIRATA)
+            3. RIMOZIONE BUG ICONE E TESTI RESIDUI
         ========================================================= */
-        /* Nasconde i testi residui senza rompere i widget */
         div[data-testid="stExpander"] svg + div,
         div[data-testid="stSelectbox"] svg + div,
         *:contains("keyboard_double"),
@@ -120,10 +121,10 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            7. PULSANTI (ACCESSO, REGISTRAZIONE E ALTRI)
+            7. PULSANTI (ACCESSO E REGISTRAZIONE - VERDE PETROLIO)
         ========================================================= */
         div.stButton > button, div.stFormSubmitButton > button {
-            background-color: #367588 !important; /* VERDE PETROLIO ORIGINALE */
+            background-color: #367588 !important;
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
             border-radius: 10px !important;
