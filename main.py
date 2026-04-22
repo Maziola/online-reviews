@@ -1,34 +1,28 @@
 import streamlit as st
 import auth_handler as auth 
-import openai
+from openai import OpenAI  # Import corretto
 from styles import get_logo_html, apply_custom_styles, apply_custom_font
 
-# 1. Inizializza il client leggendo la chiave dai Secrets che hai impostato prima
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+# --- 1. CONFIGURAZIONE INIZIALE & CLIENT ---
+st.set_page_config(page_title="Reviews Master Pro", layout="wide", page_icon="⭐")
 
-# 2. Poi segue la funzione che abbiamo corretto prima
-def genera_risposte_ai(review_text, extra_context, tone, biz_name, category):
-    varianti = []
+# Inizializza il client OpenAI usando i Secrets di Streamlit
+try:
+    client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+except Exception as e:
+    st.error("Errore: API Key non configurata nei Secrets di Streamlit.")
 
-# --- COLLEGAMENTO A TRANSLATIONS E MODULI ---
-# Assicurati che translations.py sia nella stessa cartella di main.py
+# --- 2. COLLEGAMENTO MODULI ESTERNI ---
 import translations 
 from translations import t, LANG_MAP, t_list
 from sidebar import render_sidebar
 from admin_panel import render_admin_zone
 
-# --- SETUP PAGINA ---
-st.set_page_config(page_title="Reviews Master Pro", layout="wide", page_icon="⭐")
+# Applica stili e font
 apply_custom_font("Ubuntu")
 apply_custom_styles()
 
-# --- CONFIGURAZIONE OPENAI ---
-try:
-    openai.api_key = st.secrets["OPENAI_API_KEY"]
-except:
-    pass
-
-# Inizializzazione sessione
+# --- 3. INIZIALIZZAZIONE SESSION STATE ---
 if "current_lang_code" not in st.session_state: 
     st.session_state.current_lang_code = "it"
 if "auth" not in st.session_state: 
@@ -38,16 +32,15 @@ if "username" not in st.session_state:
 if "history_item" not in st.session_state: 
     st.session_state.history_item = None
 
-# Funzione per generare le risposte
+# --- 4. FUNZIONE GENERAZIONE AI (3 VARIANTI) ---
 def genera_risposte_ai(review_text, extra_context, tone, biz_name, category):
     varianti = []
     
-    # Prompt strutturato usando tutti i dati della sidebar
     prompt_base = f"""
     Sei un esperto di customer care per un'attività di tipo {category} chiamata {biz_name}.
     Rispondi a questa recensione: "{review_text}"
-    Tono della risposta: {tone}.
-    Contesto aggiuntivo: {extra_context}.
+    Tono richiesto: {tone}.
+    Dettagli aggiuntivi da includere: {extra_context}.
     """
 
     for i in range(3):
@@ -55,10 +48,10 @@ def genera_risposte_ai(review_text, extra_context, tone, biz_name, category):
             response = client.chat.completions.create(
                 model="gpt-4o",
                 messages=[
-                    {"role": "system", "content": "Sei un assistente professionale."},
-                    {"role": "user", "content": f"{prompt_base}\nGenera la variante numero {i+1} diversa dalle precedenti."}
+                    {"role": "system", "content": "Sei un assistente professionale che scrive risposte alle recensioni."},
+                    {"role": "user", "content": f"{prompt_base}\nGenera la variante numero {i+1}. Deve essere diversa dalle altre."}
                 ],
-                temperature=0.7
+                temperature=0.8 # Leggermente più alta per favorire la diversità tra varianti
             )
             varianti.append(response.choices[0].message.content)
         except Exception as e:
@@ -66,7 +59,7 @@ def genera_risposte_ai(review_text, extra_context, tone, biz_name, category):
             
     return varianti
 
-# --- LOGICA DI ACCESSO ---
+# --- 5. LOGICA DI ACCESSO (LOGIN/REGISTRAZIONE) ---
 if not st.session_state.auth:
     col_l, col_m, col_r = st.columns([1, 2, 1])
     
@@ -86,11 +79,7 @@ if not st.session_state.auth:
     with col_m:
         st.markdown(get_logo_html(80), unsafe_allow_html=True)
         
-        # DEFINIZIONE TABS (Uso esplicito di t())
-        label_login = t("login_tab")
-        label_reg = t("reg_tab")
-        
-        tab_login, tab_reg = st.tabs([label_login, label_reg])
+        tab_login, tab_reg = st.tabs([t("login_tab"), t("reg_tab")])
         
         with tab_login:
             with st.form("login_form"):
@@ -119,20 +108,22 @@ if not st.session_state.auth:
                     else: st.error(msg)
     st.stop()
 
-# --- APP INTERNA (DOPO LOGIN) ---
+# --- 6. APP PRINCIPALE (DOPO LOGIN) ---
 render_sidebar()
 st.markdown(get_logo_html(60), unsafe_allow_html=True)
 
+# Pannello Admin
 if st.session_state.username.lower() == "admin":
     render_admin_zone()
     st.markdown("---")
 
+# Visualizzazione Storico o Dashboard
 if st.session_state.history_item:
     item = st.session_state.history_item
     st.markdown('<div class="main-card">', unsafe_allow_html=True)
     st.subheader(f"📜 {t('last_analyses')}: {item[3]}")
     st.info(f"**{t('txt_rec')}**\n\n{item[1]}")
-    st.success(f"**Risposta:**\n\n{item[2]}")
+    st.success(f"**Risposta salvata:**\n\n{item[2]}")
     if st.button("🔙 Torna"):
         st.session_state.history_item = None
         st.rerun()
@@ -140,26 +131,40 @@ if st.session_state.history_item:
 else:
     st.markdown('<div class="main-card">', unsafe_allow_html=True)
     st.markdown(f"## {t('dash_title')}")
+    
     col1, col2 = st.columns(2)
     with col1:
-        rev_text = st.text_area(t("txt_rec"), height=180)
+        rev_text = st.text_area(t("txt_rec"), height=180, placeholder="Incolla qui la recensione...")
     with col2:
-        ctx_text = st.text_area(t("extra_ctx"), height=180)
+        ctx_text = st.text_area(t("extra_ctx"), height=180, placeholder="Esempio: Offri uno sconto del 10%...")
 
     if st.button(t("btn_gen"), use_container_width=True):
         if rev_text:
-            with st.spinner("..."):
+            with st.spinner(t("loading_msg") if "loading_msg" in translations.TRANSLATIONS else "Generazione in corso..."):
+                # Recupero dati dai widget della sidebar
+                # Usiamo chiavi dinamiche basate sulla lingua se hai applicato il fix della key
+                lang = st.session_state.current_lang_code
                 b_name = st.session_state.get("sb_name", "Business")
-                b_cat = st.session_state.get("sb_cat", "General")
-                b_tone = st.session_state.get("sb_tone", "Professional")
+                b_cat = st.session_state.get(f"sb_cat", "General")
+                b_tone = st.session_state.get(f"sb_tone_{lang}", st.session_state.get("sb_tone", "Professional"))
+                
+                # Generazione
                 varianti = genera_risposte_ai(rev_text, ctx_text, b_tone, b_name, b_cat)
+                
+                # Salva la prima variante nel database come default
                 auth.save_review(st.session_state.username, b_cat, b_name, rev_text, varianti[0])
+                
                 st.success(t("success_msg"))
+                
+                # Visualizzazione delle 3 varianti in colonne
                 v_cols = st.columns(3)
-                for i, v in enumerate(varianti[:3]):
+                for i, v in enumerate(varianti):
                     with v_cols[i]:
-                        st.markdown(f"#### Opzione {i+1}")
-                        st.write(v)
+                        st.markdown(f"#### Variante {i+1}")
+                        st.info(v)
+                        if st.button(f"Copia Opzione {i+1}", key=f"copy_{i}"):
+                            st.code(v) # Comodo per copiare il testo con un click
         else:
-            st.warning(t("txt_rec"))
+            st.warning("Per favore, inserisci il testo di una recensione.")
+            
     st.markdown('</div>', unsafe_allow_html=True)
