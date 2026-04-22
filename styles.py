@@ -61,7 +61,7 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            4. AREA SIDEBAR: TESTI BIANCHI
+            4. AREA SIDEBAR: TESTI RIMANGONO BIANCHI
         ========================================================= */
         [data-testid="stSidebarContent"] * {
             color: #FFFFFF !important;
@@ -69,24 +69,27 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            5. AREA MAIN: TESTI VERDI (Pannello, Etichette, Login)
+            5. AREA MAIN (Login + Main Menu): TITOLI E LABEL VERDI
         ========================================================= */
         .stApp {
             background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
         }
 
-        /* Tutte le scritte informative e label diventano VERDI */
-        .main [data-testid="stVerticalBlock"] * {
+        /* Colora di VERDE: Accesso, Registrazione, Nome utente, Password e titoli Main Menu */
+        .main h1, .main h2, .main h3, .main h4, .main h5,
+        .main label p, 
+        .main [data-testid="stMarkdownContainer"] p,
+        .main .stTabs [data-baseweb="tab"] p {
             color: #28a745 !important;
             -webkit-text-fill-color: #28a745 !important;
+            font-weight: bold !important;
         }
 
         /* =========================================================
-            6. RIPRISTINO NERO PER IL CONTENUTO DEI WIDGET
+            6. RIPRISTINO NERO PER IL TESTO INTERNO (INPUT)
         ========================================================= */
         
-        /* Testo all'interno di Categoria, Tono della risposta, Nome utente, ecc. */
-        /* Questo garantisce che il font interno rimanga NERO su sfondo BIANCO */
+        /* Il testo scritto dall'utente o selezionato nei menu deve restare NERO */
         div[data-baseweb="base-input"] input, 
         div[data-baseweb="base-input"] textarea,
         div[data-baseweb="select"] [data-testid="stMarkdownContainer"] p,
@@ -102,7 +105,7 @@ def apply_custom_styles():
             7. PULSANTI E CARD
         ========================================================= */
         
-        /* Forza il bianco solo per il testo dei pulsanti */
+        /* Testo dei pulsanti sempre BIANCO */
         .main .stButton button *, .main .stFormSubmitButton button * {
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
