@@ -21,20 +21,19 @@ def get_logo_html(size=100):
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as f:
             data = base64.b64encode(f.read()).decode("utf-8")
+        # MODIFICA: margin-bottom riportato a 10px per evitare sovrapposizioni con login/tab
         return f'''
-            <div style="display: flex; justify-content: center; align-items: center; padding-bottom: 0px; margin-bottom: -30px;">
+            <div style="display: flex; justify-content: center; align-items: center; padding-bottom: 10px; margin-bottom: 10px;">
                 <img src="data:image/png;base64,{data}" style="width: {size*5}px; height: auto; object-fit: contain;">
             </div>
         '''
     return "<div style='height:0px;'></div>"
 
 def apply_custom_styles():
-    # CSS Ultra-aggressivo per nascondere header, menu, pulsanti deploy e GitHub
-    # Rimosso is_admin per protezione totale dell'IP
     st.markdown("""
     <style>
         /* =========================================================
-           PROTEZIONE IP: RIMOZIONE TOTALE HEADER E MENU
+            PROTEZIONE IP: RIMOZIONE TOTALE HEADER E MENU
         ========================================================= */
         header[data-testid="stHeader"] {
             display: none !important;
@@ -58,16 +57,17 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            PATCH: ELIMINAZIONE SPAZIO BIANCO INIZIALE E SOTTO LOGO
+            PATCH SPAZIATURA: EVITA SOVRAPPOSIZIONI
         ========================================================= */
+        /* MODIFICA: padding-top aumentato a 2.5rem per dare respiro al logo */
         .block-container {
-            padding-top: 0rem !important;
-            padding-bottom: 0rem !important;
+            padding-top: 2.5rem !important;
+            padding-bottom: 1rem !important;
         }
         
-        /* Rimuove lo spazio vuoto tra i blocchi (es. sotto il logo) */
+        /* MODIFICA: gap riportato a 1rem per separare titoli e campi input */
         [data-testid="stVerticalBlock"] > div:has(div[class*="stMarkdown"]) {
-            gap: 0rem !important;
+            gap: 1rem !important;
         }
 
         /* =========================================================
@@ -89,7 +89,7 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            2. SIDEBAR (SINISTRA) - FORZA TESTO BIANCO
+            2. SIDEBAR (SINISTRA)
         ========================================================= */
         [data-testid="stSidebar"], [data-testid="stSidebarContent"] {
             background-color: #4a5568 !important;
@@ -106,19 +106,14 @@ def apply_custom_styles():
 
         [data-testid="stSidebar"] .stMarkdown p, 
         [data-testid="stSidebar"] span, 
-        [data-testid="stSidebar"] .stCaption,
         [data-testid="stSidebar"] p,
         [data-testid="stSidebar"] h1, 
-        [data-testid="stSidebar"] h2, 
-        [data-testid="stSidebar"] h3,
-        [data-testid="stSidebar"] h4, 
-        [data-testid="stSidebar"] h5 {
+        [data-testid="stSidebar"] h3 {
             color: #FFFFFF !important;
-            font-weight: 600 !important;
         }
 
         /* =========================================================
-            3. AREA DESTRA E LOGIN - TUTTO VERDE PETROLIO
+            3. AREA DESTRA E LOGIN - VERDE PETROLIO
         ========================================================= */
         h1, h2, h3, h4, h5,
         label p,
@@ -129,15 +124,8 @@ def apply_custom_styles():
             font-weight: bold !important;
         }
 
-        [data-testid="stSidebar"] label p,
-        [data-testid="stSidebar"] h3,
-        [data-testid="stSidebar"] p,
-        [data-testid="stSidebar"] .stMarkdown p {
-            color: #FFFFFF !important;
-        }
-
         /* =========================================================
-            4. INPUT, TEXTAREA E SELECTBOX - SFONDO BIANCO E TESTO NERO
+            4. INPUT, TEXTAREA E SELECTBOX
         ========================================================= */
         div[data-baseweb="base-input"] input, 
         div[data-baseweb="base-input"] textarea,
@@ -147,13 +135,8 @@ def apply_custom_styles():
             background-color: #FFFFFF !important;
             color: #000000 !important;
             -webkit-text-fill-color: #000000 !important;
-            caret-color: #000000 !important;
             border-radius: 12px !important;
             border: 1px solid #CBD5E1 !important;
-        }
-
-        div[data-testid="stSelectbox"] p, div[data-testid="stSelectbox"] div {
-            color: #000000 !important;
         }
 
         /* =========================================================
@@ -177,7 +160,6 @@ def apply_custom_styles():
         div.stFormSubmitButton > button {
             background-color: #367588 !important;
             color: #FFFFFF !important;
-            -webkit-text-fill-color: #FFFFFF !important;
             border-radius: 10px !important;
             font-weight: 700 !important;
             border: none !important;
@@ -188,22 +170,12 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            7. FIX NOTIFICHE (GIALLO CHIARO) E VARIANTI
+            7. NOTIFICHE
         ========================================================= */
         [data-testid="stNotification"] {
             background-color: #fff9c4 !important;
             color: #5d4037 !important;
-            border: 1px solid #fff176 !important;
             border-radius: 10px !important;
-        }
-        
-        [data-testid="stNotification"] p {
-            color: #5d4037 !important;
-            font-weight: 600 !important;
-        }
-
-        .variant-card p {
-            color: #367588 !important;
         }
     </style>
     """, unsafe_allow_html=True)
