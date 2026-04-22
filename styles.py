@@ -21,7 +21,6 @@ def get_logo_html(size=100):
     if os.path.exists(logo_path):
         with open(logo_path, "rb") as f:
             data = base64.b64encode(f.read()).decode("utf-8")
-        # MODIFICA: Eliminato margin-bottom negativo per evitare sovrapposizioni
         return f'''
             <div style="display: flex; justify-content: center; align-items: center; padding-bottom: 10px; margin-bottom: 10px;">
                 <img src="data:image/png;base64,{data}" style="width: {size*5}px; height: auto; object-fit: contain;">
@@ -30,11 +29,10 @@ def get_logo_html(size=100):
     return "<div style='height:0px;'></div>"
 
 def apply_custom_styles():
-    # CSS Ultra-aggressivo per nascondere header, menu, pulsanti deploy e GitHub
     st.markdown("""
     <style>
         /* =========================================================
-            PROTEZIONE IP: RIMOZIONE TOTALE HEADER E MENU
+            1. RIMOZIONE HEADER E MENU (PROTEZIONE IP)
         ========================================================= */
         header[data-testid="stHeader"] {
             display: none !important;
@@ -42,180 +40,97 @@ def apply_custom_styles():
             height: 0px !important;
         }
         
-        #MainMenu {
-            display: none !important;
-            visibility: hidden !important;
-        }
-        
-        .stAppDeployButton {
-            display: none !important;
-            visibility: hidden !important;
-        }
-        
-        footer {
-            display: none !important;
-            visibility: hidden !important;
-        }
+        #MainMenu { display: none !important; }
+        .stAppDeployButton { display: none !important; }
+        footer { display: none !important; }
 
         /* =========================================================
-            SIDEBAR FISSA: RIMOZIONE PULSANTI DI CHIUSURA/APERTURA
+            2. SIDEBAR FISSA E SEMPRE VISIBILE (FIX FOTO 3)
         ========================================================= */
-        /* Nasconde la 'X' per chiudere la sidebar */
-        [data-testid="sidebar-close-button"] {
-            display: none !important;
+        [data-testid="stSidebar"] {
+            display: flex !important;
+            visibility: visible !important;
+            min-width: 350px !important;
+            max-width: 350px !important;
+            z-index: 999999 !important;
         }
-        
-        /* Nasconde il pulsante '>' (chevron) che permette di riaprire/chiudere */
+
+        /* Rimuove i pulsanti di chiusura/apertura */
+        [data-testid="sidebar-close-button"], 
         button[kind="headerNoPadding"] {
             display: none !important;
         }
-        
-        /* Impedisce il collasso della sidebar via CSS */
-        [data-testid="stSidebar"] {
-            min-width: 350px !important;
-            margin-left: 0px !important;
-        }
 
         /* =========================================================
-            PATCH: FIX SPAZIATURA E SOVRAPPOSIZIONI
+            3. RIMOZIONE TESTI SOVRAPPOSTI (FIX FOTO 1 E 2)
         ========================================================= */
-        /* MODIFICA: padding-top a 2rem per distanziare il logo dal bordo superiore */
-        .block-container {
-            padding-top: 2rem !important;
-            padding-bottom: 0rem !important;
-        }
-        
-        /* MODIFICA: gap impostato a 1rem per evitare che le scritte si attacchino agli input */
-        [data-testid="stVerticalBlock"] > div:has(div[class*="stMarkdown"]) {
-            gap: 1rem !important;
-        }
-
-        /* =========================================================
-            PATCH: ELIMINAZIONE SCRITTE SOVRAPPOSTE (SOLUZIONE RADICALE)
-        ========================================================= */
-        /* 1. Rimozione standard */
-        div[data-baseweb="select"] ~ span > div:last-child,
-        div[data-baseweb="select"] + div svg,
-        div[data-testid="stSelectbox"] div[role="button"] > div:last-child,
-        div[data-testid="stExpander"] svg {
+        /* Nasconde i nomi delle icone che appaiono come testo bluastro */
+        [data-testid="stExpander"] svg + div,
+        [data-testid="stSelectbox"] svg + div,
+        div:contains("keyboard_double"),
+        div:contains("arrow_right"),
+        span:contains("keyboard_double"),
+        span:contains("arrow_right") {
             display: none !important;
-            visibility: hidden !important;
-        }
-
-        /* 2. Forzatura invisibilità (Trasparenza e dimensione zero) per scritte residue */
-        /* Questo colpisce 'arrow_right', 'keyboard_double', ecc. se appaiono come testo */
-        div[data-testid="stExpander"] p:empty,
-        div[aria-expanded="true"] > div > svg + div,
-        div[aria-expanded="false"] > div > svg + div,
-        *:contains("arrow_right"), 
-        *:contains("keyboard_double") {
-            color: transparent !important;
             font-size: 0px !important;
+            color: transparent !important;
             line-height: 0 !important;
             visibility: hidden !important;
-            opacity: 0 !important;
-            user-select: none !important;
-            pointer-events: none !important;
-            text-indent: -9999px !important;
         }
 
         /* =========================================================
-            1. SFONDO GENERALE APP
-        ========================================================= */
-        .stApp {
-            background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
-        }
-
-        /* =========================================================
-            2. SIDEBAR (SINISTRA) - FORZA TESTO BIANCO
+            4. DESIGN SIDEBAR (COLORI E TESTO)
         ========================================================= */
         [data-testid="stSidebar"], [data-testid="stSidebarContent"] {
             background-color: #4a5568 !important;
             background-image: none !important;
         }
 
-        [data-testid="stSidebar"] div[data-testid="stWidgetLabel"] p,
         [data-testid="stSidebar"] label p,
-        [data-testid="stSidebar"] label {
-            color: #FFFFFF !important;
-            font-weight: 700 !important;
-            opacity: 1 !important;
-        }
-
-        [data-testid="stSidebar"] .stMarkdown p, 
-        [data-testid="stSidebar"] span, 
-        [data-testid="stSidebar"] .stCaption,
-        [data-testid="stSidebar"] p,
-        [data-testid="stSidebar"] h1, 
-        [data-testid="stSidebar"] h2, 
+        [data-testid="stSidebar"] .stMarkdown p,
         [data-testid="stSidebar"] h3,
-        [data-testid="stSidebar"] h4, 
-        [data-testid="stSidebar"] h5 {
+        [data-testid="stSidebar"] span {
             color: #FFFFFF !important;
             font-weight: 600 !important;
         }
 
         /* =========================================================
-            3. AREA DESTRA E LOGIN - TUTTO VERDE PETROLIO
+            5. DESIGN AREA PRINCIPALE (VERDE PETROLIO)
         ========================================================= */
-        h1, h2, h3, h4, h5,
-        label p,
-        button[data-baseweb="tab"] p,
-        .stApp .stMarkdown p,
-        .stApp span {
+        h1, h2, h3, h4, h5, label p, .stApp .stMarkdown p, .stApp span {
             color: #367588 !important;
             font-weight: bold !important;
         }
 
-        [data-testid="stSidebar"] label p,
-        [data-testid="stSidebar"] h3,
-        [data-testid="stSidebar"] p,
-        [data-testid="stSidebar"] .stMarkdown p {
-            color: #FFFFFF !important;
+        .stApp {
+            background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
         }
 
         /* =========================================================
-            4. INPUT, TEXTAREA E SELECTBOX - SFONDO BIANCO E TESTO NERO
+            6. WIDGET (INPUT, TEXTAREA, SELECT) - FIX VISIBILITÀ
         ========================================================= */
         div[data-baseweb="base-input"] input, 
         div[data-baseweb="base-input"] textarea,
-        div[data-baseweb="select"] > div, 
-        .stTextInput input,
-        .stTextArea textarea {
+        div[data-baseweb="select"] > div,
+        .stTextInput input, .stTextArea textarea {
             background-color: #FFFFFF !important;
             color: #000000 !important;
             -webkit-text-fill-color: #000000 !important;
-            caret-color: #000000 !important;
             border-radius: 12px !important;
             border: 1px solid #CBD5E1 !important;
         }
 
+        /* Forza il testo nero dentro le selectbox */
         div[data-testid="stSelectbox"] p, div[data-testid="stSelectbox"] div {
             color: #000000 !important;
         }
 
         /* =========================================================
-            5. CARD BIANCA (Dashboard)
+            7. PULSANTI E CARD
         ========================================================= */
-        .main-card {
-            background-color: #FFFFFF !important;
-            border-radius: 20px !important;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
-            padding: 40px !important;
-        }
-        
-        .main-card .stMarkdown p {
-            color: #000000 !important;
-        }
-
-        /* =========================================================
-            6. PULSANTI
-        ========================================================= */
-        div.stButton > button, 
-        div.stFormSubmitButton > button {
+        div.stButton > button, div.stFormSubmitButton > button {
             background-color: #367588 !important;
             color: #FFFFFF !important;
-            -webkit-text-fill-color: #FFFFFF !important;
             border-radius: 10px !important;
             font-weight: 700 !important;
             border: none !important;
@@ -225,23 +140,21 @@ def apply_custom_styles():
             background-color: #2a5d6d !important;
         }
 
+        .main-card {
+            background-color: #FFFFFF !important;
+            border-radius: 20px !important;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
+            padding: 40px !important;
+        }
+
         /* =========================================================
-            7. FIX NOTIFICHE (GIALLO CHIARO) E VARIANTI
+            8. NOTIFICHE
         ========================================================= */
         [data-testid="stNotification"] {
             background-color: #fff9c4 !important;
             color: #5d4037 !important;
             border: 1px solid #fff176 !important;
             border-radius: 10px !important;
-        }
-        
-        [data-testid="stNotification"] p {
-            color: #5d4037 !important;
-            font-weight: 600 !important;
-        }
-
-        .variant-card p {
-            color: #367588 !important;
         }
     </style>
     """, unsafe_allow_html=True)
