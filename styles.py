@@ -44,9 +44,9 @@ def apply_custom_styles():
         footer { display: none !important; }
 
         /* =========================================================
-            2. SIDEBAR FISSA E RIMOZIONE FRECCE (CHEVRONS)
+            2. SOLUZIONE SIDEBAR TAGLIATA (FORZATURA LAYOUT)
         ========================================================= */
-        /* Blocca la sidebar ed elimina le frecce di chiusura/spostamento */
+        /* Questo blocco impedisce alla pagina di "schiacciare" la sidebar */
         [data-testid="stSidebar"] {
             min-width: 350px !important;
             max-width: 350px !important;
@@ -55,23 +55,21 @@ def apply_custom_styles():
             transition: none !important;
         }
         
-        /* RIMOZIONE DEFINITIVA DELLE FRECCE NERE (SIDEBAR CHEVRONS) E RESIZER */
-        [data-testid="sidebar-close-button"], 
-        button[kind="headerNoPadding"],
-        [data-testid="stSidebarResizer"],
-        [data-testid="stSidebar"] svg {
-            display: none !important;
-        }
-
-        /* Forza la visibilità del contenuto interno */
+        /* Forza il contenitore principale a rispettare lo spazio della sidebar */
         [data-testid="stSidebarContent"] {
             width: 350px !important;
             visibility: visible !important;
         }
 
+        /* Nasconde i tasti di chiusura */
+        [data-testid="sidebar-close-button"], button[kind="headerNoPadding"] {
+            display: none !important;
+        }
+
         /* =========================================================
-            3. RIMOZIONE BUG ICONE E TESTI RESIDUI
+            3. RIMOZIONE BUG ICONE BLUASTRE (SOLUZIONE MIRATA)
         ========================================================= */
+        /* Nasconde i testi residui senza rompere i widget */
         div[data-testid="stExpander"] svg + div,
         div[data-testid="stSelectbox"] svg + div,
         *:contains("keyboard_double"),
@@ -82,33 +80,28 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            4. DESIGN SIDEBAR: SOLO TESTO BIANCO (RICHIESTA SPECIFICA)
+            4. DESIGN SIDEBAR (FONDO E TESTO BIANCO)
         ========================================================= */
         [data-testid="stSidebar"], [data-testid="stSidebarContent"] {
             background-color: #4a5568 !important;
         }
 
-        /* Selettore specifico per forzare il bianco solo sugli elementi della sidebar */
-        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, 
-        [data-testid="stSidebar"] h3, [data-testid="stSidebar"] h4, 
-        [data-testid="stSidebar"] h5, [data-testid="stSidebar"] p,
-        [data-testid="stSidebar"] label, [data-testid="stSidebar"] span,
-        [data-testid="stSidebar"] .stMarkdown p, [data-testid="stSidebar"] .stCaption {
+        [data-testid="stSidebar"] label p, 
+        [data-testid="stSidebar"] .stMarkdown p,
+        [data-testid="stSidebar"] h3,
+        [data-testid="stSidebar"] span {
             color: #FFFFFF !important;
             font-weight: 700 !important;
-            opacity: 1 !important;
         }
 
         /* =========================================================
-            5. AREA PRINCIPALE E SFONDO GRADIENTE (INVARIATO)
+            5. AREA PRINCIPALE E SFONDO GRADIENTE
         ========================================================= */
         .stApp {
             background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
         }
 
-        /* Colore verde petrolio per i testi del menu principale */
-        .main h1, .main h2, .main h3, .main h4, .main h5, 
-        .main label p, .main .stMarkdown p, .main span {
+        h1, h2, h3, h4, h5, label p, .stApp .stMarkdown p, .stApp span {
             color: #367588 !important;
             font-weight: bold !important;
         }
@@ -127,10 +120,10 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            7. PULSANTI (ACCESSO E REGISTRAZIONE - VERDE PETROLIO)
+            7. PULSANTI (ACCESSO, REGISTRAZIONE E ALTRI)
         ========================================================= */
         div.stButton > button, div.stFormSubmitButton > button {
-            background-color: #367588 !important;
+            background-color: #367588 !important; /* VERDE PETROLIO ORIGINALE */
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
             border-radius: 10px !important;
