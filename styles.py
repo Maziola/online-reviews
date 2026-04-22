@@ -44,7 +44,7 @@ def apply_custom_styles():
         footer { display: none !important; }
 
         /* =========================================================
-            2. SOLUZIONE SIDEBAR TAGLIATA (FORZATURA LAYOUT)
+            2. SOLUZIONE SIDEBAR TAGLIATA E FISSA
         ========================================================= */
         [data-testid="stSidebar"] {
             min-width: 350px !important;
@@ -76,41 +76,46 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            4. DESIGN SIDEBAR (INVARIATO)
+            4. DESIGN SIDEBAR: TUTTO BIANCO (RIPRISTINATO)
         ========================================================= */
         [data-testid="stSidebar"], [data-testid="stSidebarContent"] {
             background-color: #4a5568 !important;
         }
 
-        [data-testid="stSidebar"] label p, 
-        [data-testid="stSidebar"] .stMarkdown p,
-        [data-testid="stSidebar"] h3,
-        [data-testid="stSidebar"] span {
+        /* Forza il bianco per ogni elemento testuale nella sidebar */
+        [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, 
+        [data-testid="stSidebar"] h3, [data-testid="stSidebar"] h4, 
+        [data-testid="stSidebar"] h5, [data-testid="stSidebar"] p,
+        [data-testid="stSidebar"] label, [data-testid="stSidebar"] span,
+        [data-testid="stSidebar"] .stMarkdown p, [data-testid="stSidebar"] .stCaption {
             color: #FFFFFF !important;
             font-weight: 700 !important;
+            opacity: 1 !important;
         }
 
         /* =========================================================
-            5. AREA PRINCIPALE E CAMBIO COLORI SPECIFICI (VERDE)
+            5. AREA PRINCIPALE: CAMBIO COLORI SPECIFICI (VERDE)
         ========================================================= */
         .stApp {
             background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
         }
 
-        /* Colore base verde petrolio per titoli generici */
-        h1, h2, h3, h4, h5, label p, .stApp .stMarkdown p, .stApp span {
+        /* Colore base verde petrolio per titoli generici area principale */
+        .main h1, .main h2, .main h3, .main h4, .main h5, 
+        .main label p, .main .stMarkdown p, .main span {
             color: #367588 !important;
             font-weight: bold !important;
         }
 
-        /* MODIFICA RICHIESTA: Colore VERDE per scritte specifiche nell'area principale */
-        /* Pannello amministratore, Gestione attività, Generatore di risposte, ecc. */
-        .main h1, .main h2, .main h3, 
-        .main div[data-testid="stMarkdownContainer"] p:contains("Pannello amministratore"),
-        .main div[data-testid="stMarkdownContainer"] p:contains("Gestione attività"),
-        .main div[data-testid="stMarkdownContainer"] p:contains("Generatore di risposte"),
-        .main div[data-testid="stMarkdownContainer"] p:contains("Testo della recensione"),
-        .main div[data-testid="stMarkdownContainer"] p:contains("Contesto extra/note specifiche") {
+        /* APPLICAZIONE MIRATA DEL VERDE SOLO ALL'AREA PRINCIPALE (MAIN) */
+        .main p:contains("Pannello amministratore"),
+        .main p:contains("Gestione attività"),
+        .main p:contains("Generatore di risposte"),
+        .main p:contains("Testo della recensione"),
+        .main p:contains("Contesto extra/note specifiche"),
+        .main h1:contains("Pannello"), .main h1:contains("Generatore"),
+        .main h2:contains("Pannello"), .main h2:contains("Generatore"),
+        .main h3:contains("Pannello"), .main h3:contains("Generatore") {
             color: #28a745 !important;
         }
 
@@ -128,7 +133,7 @@ def apply_custom_styles():
         }
 
         /* =========================================================
-            7. PULSANTI (INVARIATO)
+            7. PULSANTI E CARD (INVARIATI)
         ========================================================= */
         div.stButton > button, div.stFormSubmitButton > button {
             background-color: #367588 !important;
@@ -140,15 +145,6 @@ def apply_custom_styles():
             width: 100%;
         }
 
-        div.stButton > button:hover {
-            background-color: #2a5d6d !important;
-            color: #FFFFFF !important;
-            -webkit-text-fill-color: #FFFFFF !important;
-        }
-
-        /* =========================================================
-            8. CARD E NOTIFICHE
-        ========================================================= */
         .main-card {
             background-color: #FFFFFF !important;
             border-radius: 20px !important;
