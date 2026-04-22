@@ -63,6 +63,7 @@ def apply_custom_styles():
         /* =========================================================
             4. AREA SIDEBAR: PROGRAMMABILE (BIANCO)
         ========================================================= */
+        /* Selettore mirato esclusivamente alla Sidebar */
         [data-testid="stSidebarContent"] * {
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
@@ -75,6 +76,8 @@ def apply_custom_styles():
             background: linear-gradient(135deg, #cbd5e0 0%, #a0aec0 100%) !important;
         }
 
+        /* Selettore mirato esclusivamente al blocco Main (Login, Amministratore, Generatore) */
+        /* Cambia il colore qui sotto per modificare solo il corpo centrale */
         .main [data-testid="stVerticalBlock"] * {
             color: #28a745 !important;
             -webkit-text-fill-color: #28a745 !important;
@@ -84,20 +87,20 @@ def apply_custom_styles():
             6. ECCEZIONI E RIPRISTINI (BOTTONI E INPUT)
         ========================================================= */
         
-        /* Testo dei pulsanti: resta bianco */
+        /* Testo dei pulsanti: deve restare bianco indipendentemente dal Main */
         .main .stButton button *, .main .stFormSubmitButton button * {
             color: #FFFFFF !important;
             -webkit-text-fill-color: #FFFFFF !important;
         }
 
-        /* MODIFICA RICHIESTA: Testo dentro i box di input DIVENTA VERDE */
+        /* Testo dentro i widget di input: deve restare nero */
         div[data-baseweb="base-input"] input, 
         div[data-baseweb="base-input"] textarea,
         div[data-baseweb="select"] > div,
         .stTextInput input, .stTextArea textarea {
             background-color: #FFFFFF !important;
-            color: #28a745 !important; /* Testo scritto in verde */
-            -webkit-text-fill-color: #28a745 !important; /* Forza il colore su Chrome/Safari */
+            color: #000000 !important;
+            -webkit-text-fill-color: #000000 !important;
             border-radius: 12px !important;
         }
 
@@ -118,4 +121,4 @@ def apply_custom_styles():
             box-shadow: 0 10px 25px rgba(0,0,0,0.08) !important;
         }
     </style>
-    """, unsafe_allow_html=True)
+    """, unsafe_allow_html=True)    
